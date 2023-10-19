@@ -1,10 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
-from doctor.models import Doctor
+from CustomUser.models import CustomUser
 # Create your models here.
 
+    
 class Patient(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
     medical_history = models.TextField(blank=True)
     medications = models.TextField(blank=True)
     diagnoses = models.TextField(blank=True)
