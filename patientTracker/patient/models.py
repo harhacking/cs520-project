@@ -1,12 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User
-from doctor.models import Doctor
+from CustomUser.models import CustomUser
 # Create your models here.
 
+    
 class Patient(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor,on_delete=models.CASCADE, related_name="patients")
-    name = models.CharField(max_length=100)
-    medical_history = models.TextField()
-    medications = models.TextField()
-    diagnoses = models.TextField()
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    medical_history = models.TextField(blank=True)
+    medications = models.TextField(blank=True)
+    diagnoses = models.TextField(blank=True)
+    blood_group = models.CharField(max_length=10)
+    height =  models.DecimalField(max_digits=5,decimal_places=2)
+    weight = models.DecimalField(max_digits=5,decimal_places=2)
+    
+    

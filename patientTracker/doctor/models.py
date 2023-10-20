@@ -1,6 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from CustomUser.models import CustomUser
 
-# Create your models here.
 class Doctor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    specialization = models.CharField(max_length=100)
+    
+    
