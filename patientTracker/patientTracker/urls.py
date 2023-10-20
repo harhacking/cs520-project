@@ -16,8 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from patient.views import doctor_dashboard
+from doctor.views import register_doctor
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('dashboard',doctor_dashboard,name="dashboard")
+    path('dashboard',doctor_dashboard,name="dashboard"),
+    path('api/doctor/register',register_doctor,name="register doctor")
+    
 ]
