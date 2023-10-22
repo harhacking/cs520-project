@@ -17,9 +17,12 @@ from django.contrib import admin
 from django.urls import path
 from patient.views import doctor_dashboard
 from CustomUser.views import auth_user
+from doctor.views import register_doctor
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard',doctor_dashboard,name="dashboard"),
-    path('auth/',auth_user)
+    path('auth/',auth_user),
+    path('api/doctor/register',register_doctor,name="register doctor")
+    
 ]
