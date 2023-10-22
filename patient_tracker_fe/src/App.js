@@ -1,11 +1,12 @@
 import './App.css';
+import Navbar from './Components/Navbar';
+import Login from './Pages/Login';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        Test project
-      </header>
+      <Navbar />
+        <Login />
     </div>
   );
 }

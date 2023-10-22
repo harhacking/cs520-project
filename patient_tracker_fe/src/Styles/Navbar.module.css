@@ -1,0 +1,15 @@
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    padding: 1rem;
+    background-color: black;
+    color: white;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
