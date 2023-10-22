@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'CustomUser.CustomUser'
+
+AUTHENTICATION_BACKENDS = ["CustomUser.customUserBackend", "django.contrib.auth.backends.ModelBackend"]
+
 
 # Application definition
 
