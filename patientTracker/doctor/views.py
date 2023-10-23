@@ -1,9 +1,41 @@
 import json
 from django.shortcuts import render
+from django.http import JsonResponse
+from appointment.models import Appointment
 from CustomUser.models import CustomUser
 from django.http import JsonResponse, HttpResponseNotAllowed
 from .models import Doctor
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def doctor_appointments(request):
+    start_time = request.GET.get('start_time',None)
+    end_time = request.GET.get('end_time',None)
+    try:
+        doctor = Doctor.objects.get(user=request.user)
+        appointments = Appointment.objects.filter(doctor=doctor)
+        if start_time:
+            appointments = appointments.filter(appointment_time__gte=start_time)
+        if end_time:
+            appointments = appointments.filter(appointment_time__lte=end_time)
+        appointment_list = []
+        for appointment in appointments:
+            appointment_list.append(
+                {
+                'id': appointment.id,
+                'appointment_time': appointment.appointment_time,
+                'patient_id': appointment.patient.id,
+                'patient_notes': appointment.patient_notes,
+                'doctor_notes': appointment.doctor_notes,
+                'patient name': appointment.patient.user.first_name + " " +appointment.patient.user.last_name
+            })
+            return JsonResponse({'appointments': appointment_list})
+    except Doctor.DoesNotExist:
+        return JsonResponse({'error': 'Doctor not found'}, status=404)
+    
+
 
 
 @csrf_exempt
