@@ -6,13 +6,20 @@ from CustomUser.models import CustomUser
 from django.http import JsonResponse, HttpResponseNotAllowed
 from .models import Doctor
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 
-
-def doctor_appointments(request,doctor_id):
+@login_required
+def doctor_appointments(request):
+    start_time = request.GET.get('start_time',None)
+    end_time = request.GET.get('end_time',None)
     try:
-        doctor = Doctor.objects.get(pk=doctor_id)
+        doctor = Doctor.objects.get(user=request.user)
         appointments = Appointment.objects.filter(doctor=doctor)
+        if start_time:
+            appointments = appointments.filter(appointment_time__gte=start_time)
+        if end_time:
+            appointments = appointments.filter(appointment_time__lte=end_time)
         appointment_list = []
         for appointment in appointments:
             appointment_list.append(
