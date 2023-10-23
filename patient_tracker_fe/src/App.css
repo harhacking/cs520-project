@@ -6,3 +6,6 @@
   align-items: center;
   justify-content: center;
 }
+ html, body, * {
+  box-sizing: border-box;
+ }
