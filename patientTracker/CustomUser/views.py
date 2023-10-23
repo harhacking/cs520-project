@@ -43,6 +43,7 @@ def auth_user(request):
     else:       
         return HttpResponseForbidden()
     
+@csrf_exempt
 def logout_user(request):
     logout(request)
     return JsonResponse({"message":"Logged out successfully!"},status=200)
