@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseForbidden, JsonResponse
 from doctor.models import Doctor
 from patient.models import Patient
@@ -43,3 +43,6 @@ def auth_user(request):
     else:       
         return HttpResponseForbidden()
     
+def logout_user(request):
+    logout(request)
+    return JsonResponse({"message":"Logged out successfully!"},status=200)
