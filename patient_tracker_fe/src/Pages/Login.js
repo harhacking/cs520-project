@@ -1,5 +1,6 @@
 // import Navbar from "../Components/Navbar";
 import classes from "../Styles/Login.module.css";
+import { Link } from "react-router-dom";
 
 function Login() {
   return (
@@ -16,7 +17,7 @@ function Login() {
         </div>
         <button type="submit">Login</button>
       </form>
-      <p>Don't have an account? <a href="/">Sign up</a></p>
+      <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
     </div>
   );
 }

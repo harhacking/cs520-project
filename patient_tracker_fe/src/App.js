@@ -9,7 +9,10 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <AppointmentCard />
+      <Routes>
+        <Route path='/' element={<Login />}/>
+        <Route path='/signup' element={<Signup />}/>
+      </Routes>
       
     </div>
   );
