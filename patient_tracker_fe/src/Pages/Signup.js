@@ -3,21 +3,39 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 function Signup() {
-
   function register(e) {
+    let email = "doc@gmail.com";
+    let password = "test";
+    let first_name = "Lorem";
+    let last_name = "Ipsum";
+    let username = "testuser";
+    let specialization = "General";
+
+    let data = {
+      "first_name": first_name,
+      "last_name":last_name,
+      "username":username,
+      "password": password,
+      "email": email,
+      "specialization": specialization
+    }
+
     e.preventDefault();
-    axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-    axios.post("http://127.0.0.1:8000/api/doctor/register/", {
-      first_name:"Lorem",
-      last_name:"Ipsum",
-      username:"testuser",
-      password:"admin",
-      email:"doc@gmail.com",
-      specialization:"General"
-    })
-    .then(res => {
-      console.log(res)
-    })
+    const config = {
+      method : "post",
+      url : "http://127.0.0.1:8000/api/doctor/register/",
+      headers : {
+          "Content-Type":"application/json",  
+      },
+      data : JSON.stringify(data)
+  }
+    axios(config)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   return (
@@ -36,11 +54,12 @@ function Signup() {
           <label htmlFor="password">Confirm Password</label>
           <input type="password" id="confirmPassword" />
         </div>
-        <button type="submit" onClick={register}>Signup</button>
+        <button type="submit" onClick={register}>
+          Signup
+        </button>
       </form>
       <p>
-        Already a user?{" "}
-          <Link to="/">Login</Link>
+        Already a user? <Link to="/">Login</Link>
       </p>
     </div>
   );
