@@ -48,7 +48,7 @@ function Login() {
   //   data : JSON.stringify(data)
   // }
   axios
-    .post("http://127.0.0.1:8000/auth/", data, {
+    .post("http://127.0.0.1:8000/auth/", JSON.stringify(data), {
       headers: { 'Content-Type': 'application/json'}
     })
     .then((res) => {

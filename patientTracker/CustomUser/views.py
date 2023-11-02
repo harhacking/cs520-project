@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
@@ -9,7 +10,7 @@ from patient.models import Patient
 
 @csrf_exempt
 def auth_user(request):
-    data = request.POST
+    data = json.loads(request.body)
     username = data['username']
     password = data['password']
     user = authenticate(username=username,password=password)
