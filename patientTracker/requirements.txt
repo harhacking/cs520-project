@@ -1,5 +1,5 @@
 django
-django-cors-header
+django-cors-headers
 django-dbml
 django-environ
 psycopg2

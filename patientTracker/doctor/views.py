@@ -43,15 +43,15 @@ def register_doctor(request):
     if request.method != "POST":
         return HttpResponseNotAllowed(["POST"])
     try:
-        data = request.POST
+        data = json.loads(request.body)
         is_doctor = True
         
-        first_name = data.get('first_name')
-        last_name = data.get('last_name')
-        username = data.get('username')
-        password = data.get('password')
-        email = data.get('email')
-        specialization = data.get('specialization')
+        first_name = data['first_name']
+        last_name = data['last_name']
+        username = data['username']
+        password = data['password']
+        email = data['email']
+        specialization = data['specialization']
         
         user = CustomUser.objects.create_user(username=username,email=email,password=password,is_doctor=is_doctor,first_name=first_name,last_name=last_name)
         
