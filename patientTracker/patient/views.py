@@ -8,8 +8,9 @@ def patient_details(request):
     if request.method == 'GET':
         try:
             patient = Patient.objects.get(user=request.user)
-            patient_dict = model_to_dict(patient)
-            return JsonResponse(patient_dict)
+            user_obj = model_to_dict(request.user)
+            patient_obj = model_to_dict(patient)
+            return JsonResponse({"CustomUser": user_obj,"Patient": patient_obj})
         
         except Patient.DoesNotExist:
             return JsonResponse({'error': 'Doctor not found'}, status=404)

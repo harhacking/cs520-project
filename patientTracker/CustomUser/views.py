@@ -22,12 +22,15 @@ def auth_user(request):
     if user:
         id = None
         return_obj = None
+        user_obj = model_to_dict(user)
         if(user.is_doctor):
             doctor = Doctor.objects.get(user=user)
-            return_obj = model_to_dict(doctor)
+            return_obj = {"CustomUser": user_obj,
+                          "Doctor": model_to_dict(doctor)}
         else:
             patient = Patient.objects.get(user=user)
-            return_obj = model_to_dict(patient)
+            return_obj = {"CustomUser": user_obj,
+                          "Patient": model_to_dict(patient)}
         login(request,user)
         return JsonResponse(return_obj,status=200)
     else:       
