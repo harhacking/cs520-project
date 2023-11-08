@@ -1,9 +1,13 @@
 from django.shortcuts import render
+
+from CustomUser.models import CustomUser
 from .models import Patient
 from django.forms.models import model_to_dict
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponseNotAllowed
 import json
 
+@csrf_exempt
 def patient_details(request):
     if request.method == 'GET':
         try:
@@ -28,8 +32,15 @@ def patient_details(request):
             patient.save()
             
             user = request.user
+            if 'username' in data:
+                new_username = data['username']
+                if CustomUser.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+                    return JsonResponse({'error': 'Username is already in use'}, status=400)
             if 'email' in data:
-                user.email = data['email']
+                new_email = data['email']
+                if CustomUser.objects.filter(email=new_email).exclude(pk=user.pk).exists():
+                    return JsonResponse({'error': 'Email address is already in use'}, status=400)
+                user.email = new_email
             if 'first_name' in data:
                 user.first_name = data['first_name']
             if 'last_name' in data:
