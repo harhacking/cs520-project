@@ -4,12 +4,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseForbidden, JsonResponse
 from doctor.models import Doctor
 from patient.models import Patient
-
+import json
 
 
 @csrf_exempt
 def auth_user(request):
-    data = request.POST
+    data = json.loads(request.body)
     username = data['username']
     password = data['password']
     user = authenticate(username=username,password=password)
