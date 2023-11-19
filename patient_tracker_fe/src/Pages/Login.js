@@ -2,107 +2,98 @@
 import classes from "../Styles/Login.module.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Reast, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 function Login() {
-  // function login(e) {
-  // let username = "testuser";
-  // let password = "test";
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [blank, setBlank] = useState(false);
+  const form = useForm({ mode: "all" });
+  const { register, control, handleSubmit, formState, clearErrors, watch } =
+    form;
+  const { errors, isDirty, isValid } = formState;
 
-  useEffect(() => {
-    if (username.length === 0 || password.length === 0){
-      setBlank(true);
-    } else {
-      setBlank(false);
-    }
-  }, [username, password])
+  const username = watch("username", "");
+  const password = watch("password", "");
+  const [formErrors, setFormErrors] = useState({
+    usernameError: "",
+    passwordError: "",
+  });
 
-  // let data = {
-  //   "username":username,
-  //   "password": password,
-  // }
+  const loginHandler = (e) => {
+    const data = {
+      username: username,
+      password: password,
+    };
 
-  const login = (e) => {
-    e.preventDefault();
-
-  if (blank) {
-    setError('Please fill in both username and password fields.');
-    return;
-  }
-
-  const data = {
-    username: username,
-    password: password,
-  };
-
-  // const config = {
-  //   method : "post",
-  //   url : "http://127.0.0.1:8000/auth/",
-  //   headers : {
-  //       "Content-Type":"application/json",  
-  //   },
-  //   data : JSON.stringify(data)
-  // }
-  axios
-    .post("http://127.0.0.1:8000/auth/", JSON.stringify(data), {
-      headers: { 'Content-Type': 'application/json'}
-    })
-    .then((res) => {
-      if (res.status === 200) {
-        // successful login
-        // send user to dashboard
-        // for now:
-        console.log('login successful')
-      } else {
-        // unsuccessful login
-        setError("Login failed. Please check username and password.")
-      }
-    })
-    .catch((error) => {
-      // fun for debugging
-      console.error(error);
-      setError('error occured which logging in.')
-    });
-
-    // axios(config)
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
+    axios
+      .post("http://127.0.0.1:8000/auth/", JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          // send user to dashboard on successful login
+          console.log("login successful"); 
+        } else {
+          // Dummy error messages for now. Get actual from backend response
+          setFormErrors({
+            usernameError: "Username error",
+            passwordError: "Password error",
+          });
+        }
+      })
+      .catch((error) => {
+        // fun for debugging
+        console.error(error);
+      });
   };
 
   return (
     <div className={classes.loginContainer}>
       <p>Login</p>
-      <form className={classes.loginForm}>
+      <form
+        className={classes.loginForm}
+        onSubmit={handleSubmit(loginHandler)}
+        noValidate
+      >
         <div className={classes.username}>
           <label htmlFor="username">Username</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             id="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            {...register("username", {
+              required: "Username cannot be empty",
+            })}
           />
+          <p className={classes.errorMessage}>
+            {errors.username?.message || formErrors.usernameError}
+          </p>
         </div>
         <div className={classes.password}>
           <label htmlFor="password">Password</label>
-          <input 
+          <input
             type="password"
-            id="password" 
+            id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password", {
+              required: "Password cannot be empty",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+              pattern: {
+                value:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+                message:
+                  "Must contain at least 1 upper and lowercase letter, one digit, and 1 special character",
+              },
+            })}
           />
+          <p className={classes.errorMessage}>
+            {errors.password?.message || formErrors.passwordError}
+          </p>
         </div>
-        {error && <p className={classes.errorMsg}>{error}</p>}
-        <button type="submit" onClick={login}>
-          Login
-        </button>
+
+        <button type="submit">Login</button>
       </form>
       <p>
         Don't have an account? <Link to="/signup">Sign up</Link>
