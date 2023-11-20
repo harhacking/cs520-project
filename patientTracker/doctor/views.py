@@ -6,6 +6,7 @@ from CustomUser.models import CustomUser
 from django.http import JsonResponse, HttpResponseNotAllowed
 from .models import Doctor
 from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 
 
@@ -35,8 +36,49 @@ def doctor_appointments(request):
     except Doctor.DoesNotExist:
         return JsonResponse({'error': 'Doctor not found'}, status=404)
     
-
-
+@csrf_exempt
+def doctor_details(request):
+    if request.method == 'GET':
+        try:
+            doctor = Doctor.objects.get(user=request.user)
+            user_obj = model_to_dict(request.user)
+            doctor_obj = model_to_dict(doctor)
+            return JsonResponse({"CustomUser": user_obj,"Doctor": doctor_obj})
+        
+        except Doctor.DoesNotExist:
+            return JsonResponse({'error': 'Doctor not found'}, status=404)
+    elif request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            doctor = Doctor.objects.get(user=request.user)
+           
+            doctor.specialization = data.get('specialization', doctor.specialization)
+            doctor.save()
+            
+            user = request.user
+            if 'username' in data:
+                new_username = data['username']
+                if CustomUser.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+                    return JsonResponse({'error': 'Username is already in use'}, status=400)
+            if 'email' in data:
+                new_email = data['email']
+                if CustomUser.objects.filter(email=new_email).exclude(pk=user.pk).exists():
+                    return JsonResponse({'error': 'Email address is already in use'}, status=400)
+                user.email = data['email']
+            if 'first_name' in data:
+                user.first_name = data['first_name']
+            if 'last_name' in data:
+                user.last_name = data['last_name']
+            if 'password' in data:
+                user.set_password(data['password'])  
+            user.save()
+            return JsonResponse({'message': 'Doctor details updated successfully'})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+        except Doctor.DoesNotExist:
+            return JsonResponse({'error': 'Doctor not found'}, status=404)
+    else:
+        return HttpResponseNotAllowed(["GET","PUT"])
 
 @csrf_exempt
 def register_doctor(request):
