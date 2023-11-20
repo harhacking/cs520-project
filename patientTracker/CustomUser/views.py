@@ -1,7 +1,8 @@
+import json
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from doctor.models import Doctor
 from patient.models import Patient
 import json
@@ -9,9 +10,13 @@ import json
 
 @csrf_exempt
 def auth_user(request):
-    data = json.loads(request.body)
-    username = data['username']
-    password = data['password']
+
+    try:
+        data = json.loads(request.body)
+        username = data['username']
+        password = data['password']
+    except:
+        return HttpResponseBadRequest()
     user = authenticate(username=username,password=password)
     
     if user:

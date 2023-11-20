@@ -2,71 +2,98 @@
 import classes from "../Styles/Login.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 function Login() {
-  const [loginData, setLoginData] = useState({
-    username: "",
-    password: "",
+  const form = useForm({ mode: "all" });
+  const { register, control, handleSubmit, formState, clearErrors, watch } =
+    form;
+  const { errors, isDirty, isValid } = formState;
+
+  const username = watch("username", "");
+  const password = watch("password", "");
+  const [formErrors, setFormErrors] = useState({
+    usernameError: "",
+    passwordError: "",
   });
-  const navigate = useNavigate();
 
-  function setFormData(event) {
-    event.preventDefault();
-    const {
-      target: { name, value },
-    } = event;
-    setLoginData({
-      ...loginData,
-      [name]: value,
-    });
-  }
-
-
-  function login(event) {
-    event.preventDefault();
-    const config = {
-      method: "post",
-      url: "http://127.0.0.1:8000/auth/",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify(loginData),
+  const loginHandler = (e) => {
+    const data = {
+      username: username,
+      password: password,
     };
-    axios(config)
-      .then((res) => {
-        console.log(res);
-        navigate("/home");
+
+    axios
+      .post("http://127.0.0.1:8000/auth/", JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" },
       })
-      .catch((e) => {
-        console.log(e);
+      .then((res) => {
+        if (res.status === 200) {
+          // send user to dashboard on successful login
+          console.log("login successful"); 
+        } else {
+          // Dummy error messages for now. Get actual from backend response
+          setFormErrors({
+            usernameError: "Username error",
+            passwordError: "Password error",
+          });
+        }
+      })
+      .catch((error) => {
+        // fun for debugging
+        console.error(error);
       });
-  }
+  };
+
   return (
     <div className={classes.loginContainer}>
       <p>Login</p>
-      <form className={classes.loginForm}>
+      <form
+        className={classes.loginForm}
+        onSubmit={handleSubmit(loginHandler)}
+        noValidate
+      >
         <div className={classes.username}>
           <label htmlFor="username">Username</label>
           <input
             type="text"
             id="username"
-            name="username"
-            onChange={setFormData}
+            value={username}
+            {...register("username", {
+              required: "Username cannot be empty",
+            })}
           />
+          <p className={classes.errorMessage}>
+            {errors.username?.message || formErrors.usernameError}
+          </p>
         </div>
         <div className={classes.password}>
           <label htmlFor="password">Password</label>
           <input
             type="password"
             id="password"
-            name="password"
-            onChange={setFormData}
+            value={password}
+            {...register("password", {
+              required: "Password cannot be empty",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+              pattern: {
+                value:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+                message:
+                  "Must contain at least 1 upper and lowercase letter, one digit, and 1 special character",
+              },
+            })}
           />
+          <p className={classes.errorMessage}>
+            {errors.password?.message || formErrors.passwordError}
+          </p>
         </div>
-        <button type="submit" onClick={login}>
-          Login
-        </button>
+
+        <button type="submit">Login</button>
       </form>
       <p>
         Don't have an account? <Link to="/signup">Sign up</Link>

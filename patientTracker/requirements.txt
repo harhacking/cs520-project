@@ -1,0 +1,5 @@
+django
+django-cors-headers
+django-dbml
+django-environ
+psycopg2
