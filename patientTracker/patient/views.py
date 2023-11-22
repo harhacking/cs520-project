@@ -4,16 +4,17 @@ from CustomUser.models import CustomUser
 from .models import Patient
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseNotAllowed
 from appointment.models import Appointment
+from django.http import JsonResponse, HttpResponseNotAllowed,HttpResponseForbidden
 import json
 
 
 
 
-@login_required
+
 def patient_appointments(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("User is not authenticated")
     start_time = request.GET.get('start_time',None)
     end_time = request.GET.get('end_time',None)
     try:
@@ -79,6 +80,8 @@ def register_patient(request):
     
 @csrf_exempt
 def patient_details(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("User is not authenticated")
     if request.method == 'GET':
         try:
             patient = Patient.objects.get(user=request.user)
