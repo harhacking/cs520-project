@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from doctor.views import doctor_appointments,register_doctor,doctor_details
 from patient.views import patient_details
+from appointment.views import available_appointment_times
 from CustomUser.views import auth_user,logout_user
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     path('api/doctor/appointments/', doctor_appointments, name='doctor_appointments'),
     path('api/doctor/details/',doctor_details),
     path('api/patient/details/',patient_details),
+    path('api/appointment/<str:doctor_name>/',available_appointment_times),
     path('auth/',auth_user),
     path('logout/',logout_user)
     
