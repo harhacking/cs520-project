@@ -31,7 +31,7 @@ def doctor_appointments(request):
                 'patient_id': appointment.patient.id,
                 'patient_notes': appointment.patient_notes,
                 'doctor_notes': appointment.doctor_notes,
-                'patient name': appointment.patient.user.first_name + " " +appointment.patient.user.last_name
+                'patient_name': appointment.patient.user.first_name + " " +appointment.patient.user.last_name
             })
         return JsonResponse({'appointments': appointment_list})
     except Doctor.DoesNotExist:
