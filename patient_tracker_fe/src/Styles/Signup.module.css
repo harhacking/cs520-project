@@ -21,37 +21,47 @@
     align-items: center;
     justify-content: center;
     border: 1px solid black;
-    width: 30%;
-    height: 40%;
+    width: 35%;
     border-radius: 5px;
+    padding: 1rem;
 }
 
-.signupForm > div {
-    width: 70%;
+/* .signupForm > div {
+    width: 100%;
     display: flex;
     flex-direction: column;
-}
+} */
 
-.signupForm > div> * {
+/* .signupForm > div> * {
     display: block;
     font-size: 1rem;
-}
+} */
 
-.signupForm > label {
-    margin-bottom: 0.2rem;
-    color: black;
-}
+/* .signupForm label {
+} */
 
 .signupForm input {
     border: 1px solid black;
     border-radius: 2px;
     padding: 0.5rem;
     margin-bottom: 1rem;
+    width: 100%;
 }
 
 .signupForm input:focus {
     border: 1px solid transparent;
     outline: 1px solid #1ED760;
+}
+
+.signupForm .groupsOfTwo {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.signupForm .groupsOfTwo > div {
+    width: 50%;
+    margin: 0 1rem;
 }
 
 .signupForm button {
@@ -74,6 +84,5 @@
 }
 
 .signupContainer p {
-    margin-top: 0.4rem;
     font-weight: 500;
 }
