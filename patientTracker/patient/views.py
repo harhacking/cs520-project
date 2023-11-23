@@ -4,11 +4,84 @@ from CustomUser.models import CustomUser
 from .models import Patient
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse, HttpResponseNotAllowed
+from appointment.models import Appointment
+from django.http import JsonResponse, HttpResponseNotAllowed,HttpResponseForbidden
 import json
 
+
+
+
+
+def patient_appointments(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("User is not authenticated")
+    start_time = request.GET.get('start_time',None)
+    end_time = request.GET.get('end_time',None)
+    try:
+        patient = Patient.objects.get(user=request.user)
+        appointments = Appointment.objects.filter(patient=patient)
+        if start_time:
+            appointments = appointments.filter(appointment_time__gte=start_time)
+        if end_time:
+            appointments = appointments.filter(appointment_time__lte=end_time)
+        appointment_list = []
+        for appointment in appointments:
+            appointment_list.append(
+                {
+                'id': appointment.id,
+                'appointment_time': appointment.appointment_time,
+                'patient_id': appointment.patient.id,
+                'patient_notes': appointment.patient_notes,
+                'doctor_notes': appointment.doctor_notes,
+                'patient_name': appointment.patient.user.first_name + " " +appointment.patient.user.last_name
+            })
+        return JsonResponse({'appointments': appointment_list})
+    except Patient.DoesNotExist:
+        return JsonResponse({'error': 'Patient not found'}, status=404)
+
+
+@csrf_exempt
+def register_patient(request):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+    try:
+        data = json.loads(request.body)
+        is_doctor = False
+        
+        first_name = data['first_name']
+        last_name = data['last_name']
+        username = data['username']
+        password = data['password']
+        email = data['email']
+        diagnoses = data['diagnonses']
+        blood_group = data['blood_group']
+        height = data['height']
+        weight = data['weight']
+        medications = data['medications']
+        medical_history = data['medical_history']
+        
+        user = CustomUser.objects.create_user(username=username,email=email,password=password,is_doctor=is_doctor,first_name=first_name,last_name=last_name)
+        
+        patient = Patient.objects.create(user=user,diagnoses=diagnoses,blood_group=blood_group,height=height,weight=weight,medications=medications,medical_history=medical_history)
+        patient.save
+        response_data = {
+            'success': True,
+            'message': 'Patient object created successfully',
+            'id': patient.id
+        }
+        return JsonResponse(response_data,status=201)
+    except Exception as e:
+        response_data = {
+            'success': False,
+            'message': str(e),
+            'id': -1
+        }
+        return JsonResponse(response_data,status=400)
+    
 @csrf_exempt
 def patient_details(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("User is not authenticated")
     if request.method == 'GET':
         try:
             patient = Patient.objects.get(user=request.user)
