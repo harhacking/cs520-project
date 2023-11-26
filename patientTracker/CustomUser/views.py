@@ -6,11 +6,12 @@ from django.http import HttpResponseForbidden, JsonResponse, HttpResponseBadRequ
 from doctor.models import Doctor
 from django.forms.models import model_to_dict
 from patient.models import Patient
-
+import json
 
 
 @csrf_exempt
 def auth_user(request):
+
     try:
         data = json.loads(request.body)
         username = data['username']
