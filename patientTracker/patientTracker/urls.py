@@ -26,7 +26,7 @@ urlpatterns = [
     path('api/doctor/appointments/', doctor_appointments, name='doctor_appointments'),
     path('api/doctor/details/',doctor_details),
     path('api/patient/details/',patient_details),
-    path('api/appointment/<str:doctor_name>/',available_appointment_times),
+    path('api/appointment/<int:doctor_id>/',available_appointment_times),
     path('auth/',auth_user),
     path('logout/',logout_user)
     

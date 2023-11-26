@@ -1,24 +1,24 @@
 from django.shortcuts import render
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponseForbidden
 from doctor.models import Doctor
 from django.db.models import Q
 from datetime import datetime, timedelta
 from .models import Appointment
 
 
-
+ms_hour = int(timedelta(hours=1).total_seconds() * 1000)
 
 
 def epoch_milliseconds_to_datetime(epoch_milliseconds):
-    return datetime.utcfromtimestamp(epoch_milliseconds / 1000.0)
+    return datetime.utcfromtimestamp(epoch_milliseconds / 1000)
 
 
-@login_required
-def available_appointment_times(request, doctor_name):
+def available_appointment_times(request, doctor_id):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("User is not authenticated")
     if request.method == "GET":
         try:
-            doctor = Doctor.objects.get(name=doctor_name)
+            doctor = Doctor.objects.get(pk=doctor_id)
         except Doctor.DoesNotExist:
             return JsonResponse({"error": "Doctor not found"}, status=404)
 
@@ -37,18 +37,18 @@ def available_appointment_times(request, doctor_name):
         appointments = Appointment.objects.filter(doctor=doctor)
 
         available_times = []
-        current_time = datetime.utcnow()
+        current_time =start_time
         
         while current_time <= end_time and current_time.time() <= end_time.time():
             working_hours_start = datetime.combine(current_time.date(), datetime.strptime("09:00", "%H:%M").time())
-            working_hours_end = datetime.combine(current_time.date(), datetime.strptime("17:00", "%H:%M").time())
-
+            working_hours_end = datetime.combine(current_time.date(), datetime.strptime("16:00", "%H:%M").time())
+            
             if working_hours_start.time() <= current_time.time() <= working_hours_end.time():
+                curr_timestamp = int(current_time.timestamp())*1000
                 if not appointments.filter(
-                    Q(appointment_time__lte=current_time.timestamp() * 1000) &
-                    Q(appointment_time__gte=(current_time - timedelta(hours=1)).timestamp() * 1000)
+                     Q(appointment_time__gt=curr_timestamp - ms_hour, appointment_time__lt=curr_timestamp + ms_hour)
                 ).exists():
-                    available_times.append(current_time.timestamp() * 1000)
+                    available_times.append(curr_timestamp)
 
             current_time += timedelta(hours=1)
 
