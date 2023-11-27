@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from doctor.views import doctor_appointments,register_doctor,doctor_details
+from doctor.views import doctor_appointments,register_doctor,doctor_details,list_doctors
 from patient.views import patient_details,register_patient,patient_appointments
 from CustomUser.views import auth_user,logout_user
 from appointment.views import create_appointment
@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/doctor/register/',register_doctor,name="register doctor"),
     path('api/doctor/appointments/', doctor_appointments, name='doctor_appointments'),
     path('api/doctor/details/',doctor_details),
+    path('api/doctor/list/',list_doctors),
     path('api/patient/details/',patient_details),
     path('api/patient/register/',register_patient),
     path('api/patient/appointments/',patient_appointments),
