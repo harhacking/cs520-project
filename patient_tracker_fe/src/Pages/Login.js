@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 function Login() {
+  console.log("CLICKED BUTTON")
   const form = useForm({ mode: "all" });
   const { register, control, handleSubmit, formState, clearErrors, watch } =
     form;
@@ -76,16 +77,16 @@ function Login() {
             value={password}
             {...register("password", {
               required: "Password cannot be empty",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
-              pattern: {
-                value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-                message:
-                  "Must contain at least 1 upper and lowercase letter, one digit, and 1 special character",
-              },
+              // minLength: {
+              //   value: 6,
+              //   message: "Password must be at least 6 characters",
+              // },
+              // pattern: {
+              //   value:
+              //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+              //   message:
+              //     "Must contain at least 1 upper and lowercase letter, one digit, and 1 special character",
+              // },
             })}
           />
           <p className={classes.errorMessage}>
@@ -93,7 +94,7 @@ function Login() {
           </p>
         </div>
 
-        <button type="submit">Login</button>
+        <button type="submit" >Login</button>
       </form>
       <p>
         Don't have an account? <Link to="/presignup">Sign up</Link>
