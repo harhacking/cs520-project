@@ -18,7 +18,7 @@ from django.urls import path
 from doctor.views import doctor_appointments,register_doctor,doctor_details
 from patient.views import patient_details,register_patient,patient_appointments
 from CustomUser.views import auth_user,logout_user
-from appointment.views import create_appointment
+from appointment.views import create_appointment, cancel_appointment
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/patient/register/',register_patient),
     path('api/patient/appointments/',patient_appointments),
     path('api/appointment/create/', create_appointment),
+    path('api/appointment/cancel/<int:appointment_id>',cancel_appointment),
     path('auth/',auth_user),
     path('logout/',logout_user),
     

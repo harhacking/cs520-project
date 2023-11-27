@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from doctor.models import Doctor
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
@@ -48,3 +48,23 @@ def create_appointment(request):
             'id': -1
         }
         return JsonResponse(response_data,status=400)
+
+
+@csrf_exempt
+def cancel_appointment(request,appointment_id):
+    if request.method == 'DELETE':
+        appointment = get_object_or_404(Appointment,pk=appointment_id)
+        req_user = request.user
+        if req_user.is_doctor:
+            req_doctor = Doctor.objects.get(user=req_user)
+            if appointment.doctor.id != req_doctor.id:
+                return HttpResponseForbidden("Can only delete a user's own appointments") 
+        else:
+            req_patient = Patient.objects.get(user=req_user)
+            if appointment.patient.id != req_patient.id:
+                return HttpResponseForbidden("Can only delete a user's own appointments")
+            
+        appointment.delete()
+        return JsonResponse({'message': 'Appointment deleted successfully.'}, status=204)
+    else:
+        return HttpResponseNotAllowed(["DELETE"])
