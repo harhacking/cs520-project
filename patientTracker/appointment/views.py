@@ -57,12 +57,15 @@ def update_notes(request,appointment_id):
     if not request.user.is_authenticated:
             return HttpResponseForbidden("User is not authenticated")
     data = json.loads(request.body)
-    if request.user.is_doctor:
-        doctor_notes = data['doctor_notes']
-        appointment.doctor_notes = doctor_notes
-    else:
-        patient_notes = data['patient_notes']
-        appointment.patient_notes = patient_notes
+    try:
+        if request.user.is_doctor:
+            doctor_notes = data['doctor_notes']
+            appointment.doctor_notes = doctor_notes
+        else:
+            patient_notes = data['patient_notes']
+            appointment.patient_notes = patient_notes
+    except:
+        return HttpResponseBadRequest("Must include patient_notes or doctor_notes")
     
     appointment.save()
     return JsonResponse({"message":"Notes updated successfully"},status=200)
