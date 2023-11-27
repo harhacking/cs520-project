@@ -6,6 +6,7 @@ from .models import Appointment
 from patient.models import Patient
 from doctor.models import Doctor
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 import json
 
 
@@ -78,6 +79,12 @@ def create_appointment(request):
     
     req_doctor = Doctor.objects.get(pk=doctor_id)
     req_patient = Patient.objects.get(pk=patient_id)
+    
+    if Appointment.objects.filter(
+    Q(doctor=req_doctor, appointment_time=appointment_time) |
+    Q(patient=req_patient, appointment_time=appointment_time)).exists():
+        return HttpResponseBadRequest("Doctor or patient already has an appointment at the requested time", status=400)
+    
     if request.user.is_doctor:
         if request.user.id != req_doctor.user.id:
             return HttpResponseForbidden("Cannot make appointment for different doctor")
