@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from doctor.models import Doctor
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
@@ -48,3 +48,21 @@ def create_appointment(request):
             'id': -1
         }
         return JsonResponse(response_data,status=400)
+    
+@csrf_exempt
+def update_notes(request,appointment_id):
+    appointment = get_object_or_404(Appointment,pk=appointment_id)
+    if request.method != "PUT":
+        return HttpResponseNotAllowed(["PUT"])
+    if not request.user.is_authenticated:
+            return HttpResponseForbidden("User is not authenticated")
+    data = json.loads(request.body)
+    if request.user.is_doctor:
+        doctor_notes = data['doctor_notes']
+        appointment.doctor_notes = doctor_notes
+    else:
+        patient_notes = data['patient_notes']
+        appointment.patient_notes = patient_notes
+    
+    appointment.save()
+    return JsonResponse({"message":"Notes updated successfully"},status=200)
