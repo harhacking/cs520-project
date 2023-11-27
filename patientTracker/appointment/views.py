@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, get_object_or_404
 from doctor.models import Doctor
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseBadRequest
@@ -110,7 +109,28 @@ def create_appointment(request):
         }
         return JsonResponse(response_data,status=400)
 
+@csrf_exempt
+def update_notes(request,appointment_id):
+    appointment = get_object_or_404(Appointment,pk=appointment_id)
+    if request.method != "PUT":
+        return HttpResponseNotAllowed(["PUT"])
+    if not request.user.is_authenticated:
+            return HttpResponseForbidden("User is not authenticated")
+    data = json.loads(request.body)
+    try:
+        if request.user.is_doctor:
+            doctor_notes = data['doctor_notes']
+            appointment.doctor_notes = doctor_notes
+        else:
+            patient_notes = data['patient_notes']
+            appointment.patient_notes = patient_notes
+    except:
+        return HttpResponseBadRequest("Must include patient_notes or doctor_notes")
+    
+    appointment.save()
+    return JsonResponse({"message":"Notes updated successfully"},status=200)
 
+  
 @csrf_exempt
 def cancel_appointment(request,appointment_id):
     if request.method == 'DELETE':
@@ -129,3 +149,4 @@ def cancel_appointment(request,appointment_id):
         return JsonResponse({'message': 'Appointment deleted successfully.'}, status=204)
     else:
         return HttpResponseNotAllowed(["DELETE"])
+

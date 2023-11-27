@@ -16,10 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from doctor.views import doctor_appointments,register_doctor,doctor_details,list_doctors
-from appointment.views import available_appointment_times, create_appointment,cancel_appointment
+from appointment.views import available_appointment_times, create_appointment,cancel_appointment,update_notes
 from patient.views import patient_details,register_patient,patient_appointments
 from CustomUser.views import auth_user,logout_user
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,7 +35,8 @@ urlpatterns = [
     path('api/patient/appointments/',patient_appointments),
   
     path('api/appointment/create/', create_appointment),
+    path('api/appointment/update/<int:appointment_id>/note/', update_notes),
     path('api/appointment/cancel/<int:appointment_id>',cancel_appointment),
     path('api/appointment/<int:doctor_id>/',available_appointment_times)
-   
+
 ]
