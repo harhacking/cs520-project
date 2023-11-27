@@ -13,13 +13,11 @@ function PreSignup() {
           <p>New patient or doctor?</p>
             <div>
               <Link to="/signup">
-                <button onClick={() => alert('Button 1 clicked')}>Patient</button> 
+                <button>Patient</button> 
               </Link>
-              {/* <button onClick={() => alert('Button 1 clicked')}>Patient</button> */}
               <Link to="/DoctorSignup">
-                <button onClick={() => alert('Button 2 clicked')}>Doctor</button>
+                <button>Doctor</button>
               </Link>
-              {/* <button onClick={() => alert('Button 2 clicked')}>Doctor</button> */}
             </div>
           </form>
           <p>
