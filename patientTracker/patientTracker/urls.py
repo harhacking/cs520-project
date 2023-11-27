@@ -15,23 +15,28 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from doctor.views import doctor_appointments,register_doctor,doctor_details
+from doctor.views import doctor_appointments,register_doctor,doctor_details,list_doctors
+from appointment.views import available_appointment_times, create_appointment,cancel_appointment,update_notes
 from patient.views import patient_details,register_patient,patient_appointments
 from CustomUser.views import auth_user,logout_user
-from appointment.views import create_appointment, update_notes
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/doctor/register/',register_doctor,name="register doctor"),
-    path('api/doctor/appointments/', doctor_appointments, name='doctor_appointments'),
-    path('api/doctor/details/',doctor_details),
-    path('api/patient/details/',patient_details),
-    path('api/patient/register/',register_patient),
-    path('api/patient/appointments/',patient_appointments),
-    path('api/appointment/create/', create_appointment),
-    path('api/appointment/update/<int:appointment_id>/note/', update_notes),
     path('auth/',auth_user),
     path('logout/',logout_user),
     
-    
+    path('api/doctor/register/',register_doctor,name="register doctor"),
+    path('api/doctor/appointments/', doctor_appointments, name='doctor_appointments'),
+    path('api/doctor/details/',doctor_details),
+    path('api/doctor/list/',list_doctors),
+
+    path('api/patient/details/',patient_details),
+    path('api/patient/register/',register_patient),
+    path('api/patient/appointments/',patient_appointments),
+  
+    path('api/appointment/create/', create_appointment),
+    path('api/appointment/update/<int:appointment_id>/note/', update_notes),
+    path('api/appointment/cancel/<int:appointment_id>',cancel_appointment),
+    path('api/appointment/<int:doctor_id>/',available_appointment_times)
+
 ]
