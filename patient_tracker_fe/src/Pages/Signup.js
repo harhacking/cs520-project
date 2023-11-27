@@ -44,7 +44,6 @@ function Signup() {
     })
   }
 
-
   return (
     <div className={classes.signupContainer}>
       <p>Signup</p>
