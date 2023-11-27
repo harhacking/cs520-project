@@ -122,13 +122,14 @@ def list_doctors(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden("User is not authenticated")
     
-    doctors_info = Doctor.objects.values('user__first_name', 'user__last_name', 'specialization')
+    doctors_info = Doctor.objects.values('pk','user__first_name', 'user__last_name', 'specialization')
 
         # Create a list of key-value pairs
     doctors_list = [
             {
                 'name': f"{doctor['user__first_name']} {doctor['user__last_name']}",
-                'specialization': doctor['specialization']
+                'specialization': doctor['specialization'],
+                'id': doctor['pk']
             }
             for doctor in doctors_info
         ]
