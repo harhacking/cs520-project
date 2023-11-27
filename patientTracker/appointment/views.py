@@ -42,12 +42,13 @@ def available_appointment_times(request, doctor_id):
         available_times = []
         current_time =start_time
         
-        while current_time <= end_time and current_time.time() <= end_time.time():
+        while current_time <= end_time:
             working_hours_start = datetime.combine(current_time.date(), datetime.strptime("09:00", "%H:%M").time())
             working_hours_end = datetime.combine(current_time.date(), datetime.strptime("16:00", "%H:%M").time())
             
             if working_hours_start.time() <= current_time.time() <= working_hours_end.time() and current_time.weekday() < 5:
                 curr_timestamp = int(current_time.timestamp())*1000
+                
                 if not appointments.filter(
                      Q(appointment_time__gt=curr_timestamp - ms_hour, appointment_time__lt=curr_timestamp + ms_hour)
                 ).exists():
