@@ -1,7 +1,6 @@
 import classes from "../Styles/Signup.module.css";
 import axios from "axios";
 import { useState } from "react";
-// import { set } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 const DoctorSignup = () => {
@@ -33,6 +32,7 @@ const DoctorSignup = () => {
       .then((res) => {
         console.log(res);
         navigate("/home");
+        // EDIT HERE ONCE ENDPOINTS ARE ESTABLISHED/ BACKEND RUNS LOCALLY
       })
       .catch((e) => {
         console.log(e);
