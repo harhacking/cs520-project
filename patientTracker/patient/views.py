@@ -53,7 +53,7 @@ def register_patient(request):
         username = data['username']
         password = data['password']
         email = data['email']
-        diagnoses = data['diagnonses']
+        diagnoses = data['diagnoses']
         blood_group = data['blood_group']
         height = data['height']
         weight = data['weight']

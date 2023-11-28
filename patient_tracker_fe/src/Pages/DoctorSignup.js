@@ -13,12 +13,12 @@ const DoctorSignup = () => {
     email:"",
     username:"",
     password:"",
-    confirmPassword:"",
     specialization:""
   })
   
   function register(event) {
     event.preventDefault();
+    console.log(signupData);
     const config = {
       method: "post",
       url: "http://127.0.0.1:8000/api/doctor/register/",
@@ -77,7 +77,7 @@ const DoctorSignup = () => {
 
           <div className={classes.specialization}>
             <label htmlFor="Specialization">Specialization</label>
-            <input type="text" id="specialization" name='specialiaztion' onChange={setFormData}/>
+            <input type="text" id="specialization" name='specialization' onChange={setFormData}/>
           </div>
 
         </div>

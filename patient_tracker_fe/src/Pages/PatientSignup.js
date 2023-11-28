@@ -21,9 +21,10 @@ function PatientSignup() {
   
   function register(event) {
     event.preventDefault();
+    console.log(signupData)
     const config = {
       method: "post",
-      url: "http://127.0.0.1:8000/api/doctor/register/",
+      url: "http://127.0.0.1:8000/api/patient/register/",
       headers: {
         "Content-Type": "application/json",
       },
