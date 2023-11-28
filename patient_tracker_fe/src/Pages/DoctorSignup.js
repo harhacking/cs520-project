@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
-function Signup() {
+function DoctorSignup() {
   const form = useForm({ mode: "all" });
   const { register, handleSubmit, formState, watch, getValues } = form;
-  const { errors} = formState;
+  const { errors } = formState;
 
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({
@@ -22,10 +22,21 @@ function Signup() {
     email,
     confirmPassword,
     specialization,
-  } = watch(["firstname", "lastname", "username", "password", "email", "confirmPassword", "specialization"]);
+  } = watch([
+    "firstname",
+    "lastname",
+    "username",
+    "password",
+    "email",
+    "confirmPassword",
+    "specialization",
+  ]);
 
   function passwordMatch() {
-    if (getValues("confirmPassword") && getValues("confirmPassword") !== getValues("password")) {
+    if (
+      getValues("confirmPassword") &&
+      getValues("confirmPassword") !== getValues("password")
+    ) {
       return <p className={classes.errorMessage}>Passwords do not match</p>;
     }
     return null;
@@ -53,6 +64,7 @@ function Signup() {
       .then((res) => {
         console.log(res);
         navigate("/home");
+        // EDIT HERE ONCE ENDPOINTS ARE ESTABLISHED/ BACKEND RUNS LOCALLY
       })
       .catch((e) => {
         console.log(e);
@@ -167,7 +179,7 @@ function Signup() {
           </div>
         </div>
         <div>
-        <div className={classes.specialization}>
+          <div className={classes.specialization}>
             <label htmlFor="specialization">Specialization</label>
             <input
               type="text"
@@ -177,7 +189,9 @@ function Signup() {
                 required: "Specialization cannot be empty",
               })}
             />
-            <p className={classes.errorMessage}>{errors.specialization?.message}</p>
+            <p className={classes.errorMessage}>
+              {errors.specialization?.message}
+            </p>
           </div>
         </div>
 
@@ -190,4 +204,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default DoctorSignup;
