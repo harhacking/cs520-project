@@ -2,6 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse
 from appointment.models import Appointment
+from CustomUser.authenticate import check_token
 from CustomUser.models import CustomUser
 from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from .models import Doctor
@@ -11,12 +12,13 @@ from django.forms.models import model_to_dict
 
 
 def doctor_appointments(request):
-    if not request.user.is_authenticated:
-            return HttpResponseForbidden("User is not authenticated")
+    user = check_token(request)
+    if not user:
+        return HttpResponseForbidden("User is not authenticated")
     start_time = request.GET.get('start_time',None)
     end_time = request.GET.get('end_time',None)
     try:
-        doctor = Doctor.objects.get(user=request.user)
+        doctor = Doctor.objects.get(user=user)
         appointments = Appointment.objects.filter(doctor=doctor)
         if start_time:
             appointments = appointments.filter(appointment_time__gte=start_time)
@@ -39,12 +41,13 @@ def doctor_appointments(request):
     
 @csrf_exempt
 def doctor_details(request):
-    if not request.user.is_authenticated:
+    user = check_token(request)
+    if not user:
         return HttpResponseForbidden("User is not authenticated")
     if request.method == 'GET':
         try:
-            doctor = Doctor.objects.get(user=request.user)
-            user_obj = model_to_dict(request.user)
+            doctor = Doctor.objects.get(user=user)
+            user_obj = model_to_dict(user)
             doctor_obj = model_to_dict(doctor)
             return JsonResponse({"CustomUser": user_obj,"Doctor": doctor_obj})
         
@@ -53,12 +56,11 @@ def doctor_details(request):
     elif request.method == 'PUT':
         try:
             data = json.loads(request.body)
-            doctor = Doctor.objects.get(user=request.user)
+            doctor = Doctor.objects.get(user=user)
            
             doctor.specialization = data.get('specialization', doctor.specialization)
             doctor.save()
             
-            user = request.user
             if 'username' in data:
                 new_username = data['username']
                 if CustomUser.objects.filter(username=new_username).exclude(pk=user.pk).exists():
@@ -119,12 +121,13 @@ def register_doctor(request):
 def list_doctors(request):
     if request.method != "GET":
         return HttpResponseNotAllowed(["GET"])
-    if not request.user.is_authenticated:
+    user = check_token(request)
+    if not user:
         return HttpResponseForbidden("User is not authenticated")
     
     doctors_info = Doctor.objects.values('pk','user__first_name', 'user__last_name', 'specialization')
 
-        # Create a list of key-value pairs
+   
     doctors_list = [
             {
                 'name': f"{doctor['user__first_name']} {doctor['user__last_name']}",
@@ -134,5 +137,5 @@ def list_doctors(request):
             for doctor in doctors_info
         ]
 
-        # Return the result as JSON
+
     return JsonResponse({'doctors': doctors_list})

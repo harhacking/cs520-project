@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+from CustomUser.authenticate import check_token
 from CustomUser.models import CustomUser
 from .models import Patient
 from django.forms.models import model_to_dict
@@ -10,15 +11,14 @@ import json
 
 
 
-
-
 def patient_appointments(request):
-    if not request.user.is_authenticated:
+    user = check_token(request)
+    if not user:
         return HttpResponseForbidden("User is not authenticated")
     start_time = request.GET.get('start_time',None)
     end_time = request.GET.get('end_time',None)
     try:
-        patient = Patient.objects.get(user=request.user)
+        patient = Patient.objects.get(user=user)
         appointments = Appointment.objects.filter(patient=patient)
         if start_time:
             appointments = appointments.filter(appointment_time__gte=start_time)
@@ -81,17 +81,13 @@ def register_patient(request):
     
 @csrf_exempt
 def patient_details(request):
-    print("+++++++++++++++++++++++++++++++")
-    print("Patient details: ", request.user.is_authenticated)
-    print("+++++++++++++++++++++++++++++++")
-    if not request.user.is_authenticated:
-        print("here")
-        
+    user = check_token(request)
+    if not user:
         return HttpResponseForbidden("User is not authenticated")
     if request.method == 'GET':
         try:
-            patient = Patient.objects.get(user=request.user)
-            user_obj = model_to_dict(request.user)
+            patient = Patient.objects.get(user=user)
+            user_obj = model_to_dict(user)
             patient_obj = model_to_dict(patient)
             return JsonResponse({"CustomUser": user_obj,"Patient": patient_obj})
         
@@ -100,7 +96,7 @@ def patient_details(request):
     elif request.method == 'PUT':
         try:
             data = json.loads(request.body)
-            patient = Patient.objects.get(user=request.user)
+            patient = Patient.objects.get(user=user)
            
             patient.diagnoses = data.get('diagnoses', patient.diagnoses)
             patient.blood_group = data.get('blood_group',patient.blood_group)
@@ -110,7 +106,6 @@ def patient_details(request):
             patient.medical_history = data.get('medical_history', patient.medical_history)
             patient.save()
             
-            user = request.user
             if 'username' in data:
                 new_username = data['username']
                 if CustomUser.objects.filter(username=new_username).exclude(pk=user.pk).exists():

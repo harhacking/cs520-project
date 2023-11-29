@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from .models import Appointment
 from patient.models import Patient
 from doctor.models import Doctor
+from CustomUser.authenticate import check_token
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 import json
@@ -19,7 +20,8 @@ def epoch_milliseconds_to_datetime(epoch_milliseconds):
 
 
 def available_appointment_times(request, doctor_id):
-    if not request.user.is_authenticated:
+    user = check_token(request)
+    if not user:
         return HttpResponseForbidden("User is not authenticated")
     if request.method == "GET":
         try:
@@ -62,8 +64,9 @@ def available_appointment_times(request, doctor_id):
 
 @csrf_exempt
 def create_appointment(request):
-    if not request.user.is_authenticated:
-            return HttpResponseForbidden("User is not authenticated")
+    user = check_token(request)
+    if not user:
+        return HttpResponseForbidden("User is not authenticated")
     if request.method != "POST":
         return HttpResponseNotAllowed(["POST"])
     
@@ -86,11 +89,11 @@ def create_appointment(request):
     Q(patient=req_patient, appointment_time=appointment_time)).exists():
         return HttpResponseBadRequest("Doctor or patient already has an appointment at the requested time", status=400)
     
-    if request.user.is_doctor:
-        if request.user.id != req_doctor.user.id:
+    if user.is_doctor:
+        if user.id != req_doctor.user.id:
             return HttpResponseForbidden("Cannot make appointment for different doctor")
     else:
-        if request.user.id != req_patient.user.id:
+        if user.id != req_patient.user.id:
             return HttpResponseForbidden("Cannot make appointment for different patient")
     try:
         appointment = Appointment.objects.create(appointment_time=appointment_time,doctor=req_doctor,patient=req_patient,patient_notes=patient_notes,doctor_notes=doctor_notes)
@@ -114,11 +117,12 @@ def update_notes(request,appointment_id):
     appointment = get_object_or_404(Appointment,pk=appointment_id)
     if request.method != "PUT":
         return HttpResponseNotAllowed(["PUT"])
-    if not request.user.is_authenticated:
-            return HttpResponseForbidden("User is not authenticated")
+    user = check_token(request)
+    if not user:
+        return HttpResponseForbidden("User is not authenticated")
     data = json.loads(request.body)
     try:
-        if request.user.is_doctor:
+        if user.is_doctor:
             doctor_notes = data['doctor_notes']
             appointment.doctor_notes = doctor_notes
         else:
@@ -133,15 +137,17 @@ def update_notes(request,appointment_id):
   
 @csrf_exempt
 def cancel_appointment(request,appointment_id):
+    user = check_token(request)
+    if not user:
+        return HttpResponseForbidden("User is not authenticated")
     if request.method == 'DELETE':
         appointment = get_object_or_404(Appointment,pk=appointment_id)
-        req_user = request.user
-        if req_user.is_doctor:
-            req_doctor = Doctor.objects.get(user=req_user)
+        if user.is_doctor:
+            req_doctor = Doctor.objects.get(user=user)
             if appointment.doctor.id != req_doctor.id:
                 return HttpResponseForbidden("Can only delete a user's own appointments") 
         else:
-            req_patient = Patient.objects.get(user=req_user)
+            req_patient = Patient.objects.get(user=user)
             if appointment.patient.id != req_patient.id:
                 return HttpResponseForbidden("Can only delete a user's own appointments")
             
