@@ -40,21 +40,6 @@ def auth_user(request):
         return_obj['access'] = str(refresh.access_token)
         login(request, user)
         return JsonResponse(return_obj, status=200)
-    # if user:
-    #     id = None
-    #     return_obj = None
-    #     user_obj = model_to_dict(user)
-    #     if(user.is_doctor):
-    #         doctor = Doctor.objects.get(user=user)
-    #         return_obj = {"CustomUser": user_obj,
-    #                       "Doctor": model_to_dict(doctor)}
-    #     else:
-    #         patient = Patient.objects.get(user=user)
-    #         return_obj = {"CustomUser": user_obj,
-    #                       "Patient": model_to_dict(patient)}
-    #     login(request,user)
-    
-    #     return JsonResponse(return_obj,status=200)
     else:       
         return HttpResponseForbidden()
     
