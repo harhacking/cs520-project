@@ -21,6 +21,7 @@ function PatientSignup() {
   
   function register(event) {
     event.preventDefault();
+
     console.log(signupData)
     const config = {
       method: "post",

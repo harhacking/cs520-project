@@ -30,7 +30,6 @@
     border: 1px solid black;
     border-radius: 2px;
     padding: 0.5rem;
-    margin-bottom: 1rem;
     width: 100%;
 }
 
@@ -43,6 +42,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
+    padding: 0.5rem;
 }
 
 .signupForm .groupsOfTwo > div {
@@ -71,4 +71,9 @@
 
 .signupContainer p {
     font-weight: 500;
+}
+
+.signupContainer .errorMessage {
+    color: rgb(255, 62, 62);
+    font-size: 12px;
 }
