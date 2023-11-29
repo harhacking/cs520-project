@@ -3,15 +3,16 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from appointment.models import Appointment
 from CustomUser.models import CustomUser
-from django.http import JsonResponse, HttpResponseNotAllowed
+from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from .models import Doctor
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-from django.contrib.auth.decorators import login_required
 
 
-@login_required
+
 def doctor_appointments(request):
+    if not request.user.is_authenticated:
+            return HttpResponseForbidden("User is not authenticated")
     start_time = request.GET.get('start_time',None)
     end_time = request.GET.get('end_time',None)
     try:
@@ -30,7 +31,7 @@ def doctor_appointments(request):
                 'patient_id': appointment.patient.id,
                 'patient_notes': appointment.patient_notes,
                 'doctor_notes': appointment.doctor_notes,
-                'patient name': appointment.patient.user.first_name + " " +appointment.patient.user.last_name
+                'patient_name': appointment.patient.user.first_name + " " +appointment.patient.user.last_name
             })
         return JsonResponse({'appointments': appointment_list})
     except Doctor.DoesNotExist:
@@ -38,6 +39,8 @@ def doctor_appointments(request):
     
 @csrf_exempt
 def doctor_details(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("User is not authenticated")
     if request.method == 'GET':
         try:
             doctor = Doctor.objects.get(user=request.user)
@@ -112,3 +115,24 @@ def register_doctor(request):
             'id': -1
         }
         return JsonResponse(response_data,status=400)
+
+def list_doctors(request):
+    if request.method != "GET":
+        return HttpResponseNotAllowed(["GET"])
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("User is not authenticated")
+    
+    doctors_info = Doctor.objects.values('pk','user__first_name', 'user__last_name', 'specialization')
+
+        # Create a list of key-value pairs
+    doctors_list = [
+            {
+                'name': f"{doctor['user__first_name']} {doctor['user__last_name']}",
+                'specialization': doctor['specialization'],
+                'id': doctor['pk']
+            }
+            for doctor in doctors_info
+        ]
+
+        # Return the result as JSON
+    return JsonResponse({'doctors': doctors_list})

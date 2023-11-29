@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 function Login() {
+  const navigate = useNavigate();
+
   const form = useForm({ mode: "all" });
   const { register, control, handleSubmit, formState, clearErrors, watch } =
     form;
@@ -31,7 +33,9 @@ function Login() {
       .then((res) => {
         if (res.status === 200) {
           // send user to dashboard on successful login
-          console.log("login successful"); 
+          if(res.data.CustomUser.is_doctor) {
+            navigate("/doctor_home");
+          }
         } else {
           // Dummy error messages for now. Get actual from backend response
           setFormErrors({

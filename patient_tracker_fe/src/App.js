@@ -7,8 +7,12 @@ import Home from './Pages/Home';
 import DoctorSignup from './Pages/DoctorSignup'
 import {Routes, Route} from "react-router-dom"
 import PreSignup from './Pages/PreSignup';
+import DoctorDashboard from "../src/Pages/DoctorDashboard";
+
+import axios from 'axios';
 
 function App() {
+
   return (
     <div className="App">
       <Navbar />
@@ -18,7 +22,7 @@ function App() {
         <Route path='/home' exact element={<Home />}/>
         <Route path='/PreSignup' exact element={<PreSignup/>}/>
         <Route path='/DoctorSignup' exact element={<DoctorSignup/>}/>
-
+        <Route path='/doctor_home' exact element={<DoctorDashboard/>}/>
       </Routes>
       
     </div>
