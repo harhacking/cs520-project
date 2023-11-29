@@ -51,7 +51,7 @@ function DoctorSignup() {
       headers: {
         "Content-Type": "application/json",
       },
-
+      // HERE HERE HERE instead of code below how did you do it
       data: JSON.stringify(signupData),
     };
 
@@ -64,16 +64,6 @@ function DoctorSignup() {
       .catch((e) => {
         console.log(e);
       });
-  }
-  
-  function setFormData(event) {
-    event.preventDefault()
-    const {target: {name, value}} = event
-    setSignupData({
-      ...signupData,
-      [name]: value
-    })
-
   }
 
   return (
