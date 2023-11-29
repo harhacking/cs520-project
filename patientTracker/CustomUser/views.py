@@ -6,7 +6,7 @@ from django.http import HttpResponseForbidden, JsonResponse, HttpResponseBadRequ
 from doctor.models import Doctor
 from django.forms.models import model_to_dict
 from patient.models import Patient
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.authtoken.models import Token
 
 import json
 
@@ -35,9 +35,10 @@ def auth_user(request):
             return_obj = {"CustomUser": user_obj,
                         "Patient": model_to_dict(patient)}
         login(request,user)
-        refresh = RefreshToken.for_user(user)
-        return_obj['refresh'] = str(refresh)
-        return_obj['access'] = str(refresh.access_token)
+
+        token,created = Token.objects.get_or_create(user=user)
+        return_obj['token'] = token.key
+        
         return JsonResponse(return_obj, status=200)
     else:       
         return HttpResponseForbidden()
