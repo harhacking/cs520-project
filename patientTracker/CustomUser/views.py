@@ -38,7 +38,6 @@ def auth_user(request):
         refresh = RefreshToken.for_user(user)
         return_obj['refresh'] = str(refresh)
         return_obj['access'] = str(refresh.access_token)
-        login(request, user)
         return JsonResponse(return_obj, status=200)
     else:       
         return HttpResponseForbidden()
