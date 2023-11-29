@@ -44,20 +44,15 @@ function DoctorSignup() {
 
   function signup(event) {
     event.preventDefault();
+
     const config = {
       method: "post",
       url: "http://127.0.0.1:8000/api/doctor/register/",
       headers: {
         "Content-Type": "application/json",
       },
-      data: JSON.stringify({
-        firstname,
-        lastname,
-        username,
-        password,
-        email,
-        specialization,
-      }),
+
+      data: JSON.stringify(signupData),
     };
 
     axios(config)
@@ -69,6 +64,16 @@ function DoctorSignup() {
       .catch((e) => {
         console.log(e);
       });
+  }
+  
+  function setFormData(event) {
+    event.preventDefault()
+    const {target: {name, value}} = event
+    setSignupData({
+      ...signupData,
+      [name]: value
+    })
+
   }
 
   return (
@@ -196,6 +201,7 @@ function DoctorSignup() {
         </div>
 
         <button type="submit">Signup</button>
+
       </form>
       <p>
         Already a user? <Link to="/">Login</Link>
