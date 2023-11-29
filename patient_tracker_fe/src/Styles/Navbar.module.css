@@ -9,7 +9,16 @@ header {
     background-color: black;
     color: white;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1rem;
     font-weight: 500;
 }
 
+header > nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header > nav p {
+    margin-left: 1rem;
+}

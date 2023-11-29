@@ -90,7 +90,7 @@ def register_doctor(request):
     try:
         data = json.loads(request.body)
         is_doctor = True
-        
+        print(data)
         first_name = data['first_name']
         last_name = data['last_name']
         username = data['username']
@@ -99,9 +99,9 @@ def register_doctor(request):
         specialization = data['specialization']
         
         user = CustomUser.objects.create_user(username=username,email=email,password=password,is_doctor=is_doctor,first_name=first_name,last_name=last_name)
-        
         doctor = Doctor.objects.create(user=user,specialization=specialization)
-        doctor.save
+        doctor.save()
+
         response_data = {
             'success': True,
             'message': 'Doctor object created successfully',

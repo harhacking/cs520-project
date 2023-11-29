@@ -14,23 +14,12 @@ function DoctorSignup() {
     usernameError: "",
   });
 
-  const {
-    firstname,
-    lastname,
-    username,
-    password,
-    email,
-    confirmPassword,
-    specialization,
-  } = watch([
-    "firstname",
-    "lastname",
-    "username",
-    "password",
-    "email",
-    "confirmPassword",
-    "specialization",
-  ]);
+  const first_name = watch("first_name");
+  const last_name = watch("last_name");
+  const username = watch("username");
+  const password = watch("password");
+  const email = watch("email");
+  const specialization = watch("specialization");
 
   function passwordMatch() {
     if (
@@ -43,8 +32,14 @@ function DoctorSignup() {
   }
 
   function signup(event) {
-    event.preventDefault();
-
+    const data = {
+      first_name: first_name,
+      last_name: last_name,
+      username: username,
+      password: password,
+      email: email,
+      specialization: specialization,
+    };
     const config = {
       method: "post",
       url: "http://127.0.0.1:8000/api/doctor/register/",
@@ -52,28 +47,17 @@ function DoctorSignup() {
         "Content-Type": "application/json",
       },
 
-      data: JSON.stringify(signupData),
+      data: JSON.stringify(data),
     };
 
     axios(config)
       .then((res) => {
         console.log(res);
         navigate("/home");
-        // EDIT HERE ONCE ENDPOINTS ARE ESTABLISHED/ BACKEND RUNS LOCALLY
       })
       .catch((e) => {
         console.log(e);
       });
-  }
-  
-  function setFormData(event) {
-    event.preventDefault()
-    const {target: {name, value}} = event
-    setSignupData({
-      ...signupData,
-      [name]: value
-    })
-
   }
 
   return (
@@ -86,28 +70,28 @@ function DoctorSignup() {
       >
         <div className={classes.groupsOfTwo}>
           <div className={classes.firstname}>
-            <label htmlFor="firstname">First Name</label>
+            <label htmlFor="first_name">First Name</label>
             <input
               type="text"
-              id="firstname"
-              name="firstname"
-              {...register("firstname", {
+              id="first_name"
+              name="first_name"
+              {...register("first_name", {
                 required: "First name cannot be empty",
               })}
             />
-            <p className={classes.errorMessage}>{errors.firstname?.message}</p>
+            <p className={classes.errorMessage}>{errors.first_name?.message}</p>
           </div>
-          <div className={classes.lastname}>
-            <label htmlFor="lastname">Last Name</label>
+          <div className={classes.last_name}>
+            <label htmlFor="last_name">Last Name</label>
             <input
               type="text"
-              id="lastname"
-              name="lastname"
-              {...register("lastname", {
+              id="last_name"
+              name="last_name"
+              {...register("last_name", {
                 required: "Last name cannot be empty",
               })}
             />
-            <p className={classes.errorMessage}>{errors.lastname?.message}</p>
+            <p className={classes.errorMessage}>{errors.last_name?.message}</p>
           </div>
         </div>
         <div className={classes.groupsOfTwo}>
@@ -201,7 +185,6 @@ function DoctorSignup() {
         </div>
 
         <button type="submit">Signup</button>
-
       </form>
       <p>
         Already a user? <Link to="/">Login</Link>

@@ -21,7 +21,7 @@ def auth_user(request):
     except:
         return HttpResponseBadRequest()
     user = authenticate(username=username,password=password)
-    
+    print("user", user)
     if user:
         id = None
         return_obj = None
@@ -38,6 +38,10 @@ def auth_user(request):
         refresh = RefreshToken.for_user(user)
         return_obj['refresh'] = str(refresh)
         return_obj['access'] = str(refresh.access_token)
+        print("==============================")
+        print("Auth: ", request.user.is_authenticated)
+        print("==============================")
+
         return JsonResponse(return_obj, status=200)
     else:       
         return HttpResponseForbidden()

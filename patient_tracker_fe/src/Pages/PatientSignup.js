@@ -21,22 +21,13 @@ function PatientSignup() {
   
   function register(event) {
     event.preventDefault();
-
-    console.log(signupData)
-    const config = {
-      method: "post",
-      url: "http://127.0.0.1:8000/api/patient/register/",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify(signupData),
-    };
-
-    axios(config)
+    axios
+      .post("http://127.0.0.1:8000/api/patient/register/", JSON.stringify(signupData), {
+        headers: { "Content-Type": "application/json" },
+      })
       .then((res) => {
-        console.log(res);
-        navigate("/home");
-        // EDIT HERE ONCE ENDPOINTS ARE ESTABLISHED/ BACKEND RUNS LOCALLY
+        navigate("/patient_home");
+        localStorage.setItem("patientId", res.data.id);
       })
       .catch((e) => {
         console.log(e);
@@ -122,5 +113,4 @@ function PatientSignup() {
     </div>
   );
 }
-
 export default PatientSignup;

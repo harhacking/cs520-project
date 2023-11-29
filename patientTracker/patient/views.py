@@ -47,7 +47,6 @@ def register_patient(request):
     try:
         data = json.loads(request.body)
         is_doctor = False
-        
         first_name = data['first_name']
         last_name = data['last_name']
         username = data['username']
@@ -61,15 +60,17 @@ def register_patient(request):
         medical_history = data['medical_history']
         
         user = CustomUser.objects.create_user(username=username,email=email,password=password,is_doctor=is_doctor,first_name=first_name,last_name=last_name)
-        
         patient = Patient.objects.create(user=user,diagnoses=diagnoses,blood_group=blood_group,height=height,weight=weight,medications=medications,medical_history=medical_history)
-        patient.save
+
+        patient.save()
+
         response_data = {
             'success': True,
             'message': 'Patient object created successfully',
             'id': patient.id
         }
         return JsonResponse(response_data,status=201)
+    
     except Exception as e:
         response_data = {
             'success': False,
@@ -80,7 +81,12 @@ def register_patient(request):
     
 @csrf_exempt
 def patient_details(request):
+    print("+++++++++++++++++++++++++++++++")
+    print("Patient details: ", request.user.is_authenticated)
+    print("+++++++++++++++++++++++++++++++")
     if not request.user.is_authenticated:
+        print("here")
+        
         return HttpResponseForbidden("User is not authenticated")
     if request.method == 'GET':
         try:
