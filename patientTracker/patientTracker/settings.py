@@ -36,7 +36,7 @@ AUTH_USER_MODEL = 'CustomUser.CustomUser'
 AUTHENTICATION_BACKENDS = ["CustomUser.customUserBackend.CustomUserBackend", "django.contrib.auth.backends.ModelBackend"]
 
 
-
+FIELD_ENCRYPTION_KEY = env("FIELD_ENCRYPTION_KEY")
 
 # Application definition
 
@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'CustomUser',
     'django_dbml',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'encrypted_model_fields'
 ]
 
 REST_FRAMEWORK = {
