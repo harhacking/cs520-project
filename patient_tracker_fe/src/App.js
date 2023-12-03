@@ -9,8 +9,24 @@ import { Routes, Route } from "react-router-dom";
 import PreSignup from "./Pages/PreSignup";
 import PatientDashboard from "./Pages/PatientDashboard";
 import PatientAccountPage from "./Pages/PatientAccountPage";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
+  const [isAuth, setIsAuth] = useState(false);
+  const token = localStorage.getItem("token")
+
+  // useEffect(() => {
+  //   axios.get("http://127.0.0.1:8000/isAuth/", {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     }
+  //   }).then(res => {
+  //     console.log(res.data)
+  //     setIsAuth(res.data.isAuth)
+  //   })
+  // }, [])
+
   return (
     <div className="App">
       <Navbar />

@@ -32,8 +32,8 @@ function Login() {
       })
       .then((res) => {
         if (res.status === 200) {
-          // send user to dashboard on successful login
-          console.log(res)
+          const token = res.data.token;
+          localStorage.setItem("token", token)
           if(res.data.CustomUser.is_doctor) {
             navigate("/doctor_home");
           }

@@ -6,14 +6,20 @@ from django.http import HttpResponseForbidden, JsonResponse, HttpResponseBadRequ
 from doctor.models import Doctor
 from django.forms.models import model_to_dict
 from patient.models import Patient
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.authtoken.models import Token
 
 import json
 
 
+def isAuth(request):
+    print("got request...checking....")
+    is_auth = request.user.is_authenticated
+    if is_auth:
+        return JsonResponse({"isAuth": True}, status=200)
+    return JsonResponse({"isAuth": False}, status=200)
+
 @csrf_exempt
 def auth_user(request):
-
     try:
         data = json.loads(request.body)
         username = data['username']
@@ -35,13 +41,9 @@ def auth_user(request):
             return_obj = {"CustomUser": user_obj,
                         "Patient": model_to_dict(patient)}
         login(request,user)
-        refresh = RefreshToken.for_user(user)
-        return_obj['refresh'] = str(refresh)
-        return_obj['access'] = str(refresh.access_token)
-        print("==============================")
-        print("Auth: ", request.user.is_authenticated)
-        print("==============================")
-
+        token, created = Token.objects.get_or_create(user=user)
+        return_obj['token'] = token.key
+        
         return JsonResponse(return_obj, status=200)
     else:       
         return HttpResponseForbidden()

@@ -1,56 +1,95 @@
 .aptCard {
-    width: 35%;
-    height: 30%;
-    border: 1px solid black;
+  width: 35%;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.6);
+  margin: 1rem auto;
+  overflow: auto;
 }
 
 .aptCard .profile {
-    height: 15%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-bottom: 1px solid black;
+  height: 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgb(0, 0, 0, 0.85);
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  padding: 1rem 0.5rem;
 }
 
 .aptCard .profile p {
-    margin: 0;
-    padding: 0.2rem;
+  margin: 0;
+  padding: 0.5rem;
+  font-weight: 600;
+  color: white;
 }
 
-.aptCard .patientNotes{
-    height: 70%;
-    max-height: 70%;
-    overflow: auto;
+.aptCard .profile span:last-child {
+  color: white;
+  float: right;
 }
 
-.aptCard .patientNotes p {
-    margin: 0;
-    padding: 0.3rem;
-    text-align: justify;
+.aptCard .notes {
+  position: relative;
+  overflow: auto;
+  margin: 0.35rem auto;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+  padding: 0.5rem;
+  width: 95%;
+  font-size: 14px;
+}
+
+.aptCard .notes span {
+  display: block;
+  text-align: right;
+  color: #1ed760;
+  cursor: pointer;
+}
+
+.aptCard .notes:nth-child(2)::before,
+.aptCard .notes:nth-child(3)::before {
+  display: block;
+  margin-bottom: 0.5rem;
+  text-decoration: underline;
+  content: "Patient's Notes";
+  font-weight: 500;
+  color: #1ed760;
+}
+
+.aptCard .notes:nth-child(3)::before {
+  content: "Doctor's Notes";
+}
+
+.aptCard .notes p {
+  margin: 0;
+  text-align: justify;
+  font-size: 14px;
 }
 
 .aptCard .actionButtons {
-    height: 15%;
-    display: flex;
-    justify-content: space-evenly;
-    padding: 0.2rem;
-} 
+  height: 20%;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.25rem;
+}
 
 .aptCard .actionButtons button {
-    padding: 0.3rem 1.5rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 0;
 }
 
 .aptCard .actionButtons button:nth-of-type(1) {
-    color: #ff5441;
-    font-size: 14px;
-    font-weight: 600;
+  color: #ff5441;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .aptCard .actionButtons button:nth-of-type(2) {
-    background-color: #1ED760;
-    font-size: 14px;
-    font-weight: 600;
+  background-color: #1ed760;
+  font-size: 14px;
+  font-weight: 600;
 }

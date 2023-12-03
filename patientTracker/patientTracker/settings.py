@@ -54,12 +54,12 @@ INSTALLED_APPS = [
     'CustomUser',
     'django_dbml',
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework.authtoken'
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        'rest_framework.authentication.TokenAuthentication',
       
     ]
 }
