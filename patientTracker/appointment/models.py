@@ -8,3 +8,4 @@ class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     patient_notes = models.TextField(blank=True)
     doctor_notes = models.TextField(blank=True)
+    is_accepted = models.BooleanField(default=False)
