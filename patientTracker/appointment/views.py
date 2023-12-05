@@ -113,6 +113,23 @@ def create_appointment(request):
         return JsonResponse(response_data,status=400)
 
 @csrf_exempt
+def accept_appointment(request,appointment_id):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+    user = check_token(request)
+    if not user:
+        return HttpResponseForbidden("User is not authenticated")
+    if not user.is_doctor:
+        return HttpResponseBadRequest("Must be a doctor to accept an appointment")
+    doctor = Doctor.objects.get(user=user)
+    appointment = Appointment.objects.get(pk=appointment_id)
+    if appointment.doctor.id != doctor.id:
+        return HttpResponseBadRequest("Must be the doctor associated with the appointment to accept")
+    appointment.is_accepted = True
+    appointment.save()
+    return JsonResponse({"msg":"Appointment accepted successfully"},status=200)
+    
+@csrf_exempt
 def update_notes(request,appointment_id):
     appointment = get_object_or_404(Appointment,pk=appointment_id)
     if request.method != "PUT":
