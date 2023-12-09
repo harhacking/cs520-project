@@ -4,11 +4,11 @@ from django.http import JsonResponse
 from appointment.models import Appointment
 from CustomUser.authenticate import check_token
 from CustomUser.models import CustomUser
-from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponseForbidden, HttpResponseBadRequest
 from .models import Doctor
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-
+from patient.models import Patient
 
 
 def doctor_appointments(request):
@@ -39,6 +39,24 @@ def doctor_appointments(request):
         return JsonResponse({'appointments': appointment_list})
     except Doctor.DoesNotExist:
         return JsonResponse({'error': 'Doctor not found'}, status=404)
+    
+    
+def view_patient_details(request,patient_id):
+    user = check_token(request)
+    if not user:
+        return HttpResponseForbidden("User is not authenticated")
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+    if not user.is_doctor:
+        return HttpResponseBadRequest("User must be a doctor")
+    try:
+        patient = Patient.objects.get(pk=patient_id)
+        user_obj = model_to_dict(patient.user)
+        patient_obj = model_to_dict(patient)
+        return JsonResponse({"CustomUser": user_obj,"Patient": patient_obj})
+    
+    except Patient.DoesNotExist:
+        return JsonResponse({'error': 'Patient not found'}, status=404)
     
 @csrf_exempt
 def doctor_details(request):

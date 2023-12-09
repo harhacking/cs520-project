@@ -92,7 +92,7 @@ def patient_details(request):
             return JsonResponse({"CustomUser": user_obj,"Patient": patient_obj})
         
         except Patient.DoesNotExist:
-            return JsonResponse({'error': 'Doctor not found'}, status=404)
+            return JsonResponse({'error': 'Patient not found'}, status=404)
     elif request.method == 'PUT':
         try:
             data = json.loads(request.body)
