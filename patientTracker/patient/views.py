@@ -61,6 +61,12 @@ def register_patient(request):
         medications = data['medications']
         medical_history = data['medical_history']
         
+        if CustomUser.objects.filter(username=username).exists():
+            return JsonResponse({'error': 'Username is already in use'}, status=400)
+
+        if CustomUser.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Email address is already in use'}, status=400)
+        
         user = CustomUser.objects.create_user(username=username,email=email,password=password,is_doctor=is_doctor,first_name=first_name,last_name=last_name)
         
         patient = Patient.objects.create(user=user,diagnoses=diagnoses,blood_group=blood_group,height=height,weight=weight,medications=medications,medical_history=medical_history)
