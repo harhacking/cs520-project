@@ -1,0 +1,19 @@
+.toastContainer {
+  width: max-content;
+  position: fixed;
+  background-color: #daefff;
+  color: #0084ff;
+  border-radius: 5px;
+  border: 1px solid #0084ff;
+  float: right;
+  z-index: 99999;
+  top: 5%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+  font-family: "Lato", sans-serif;
+  letter-spacing: 0.25px;
+  padding: 1rem;
+}

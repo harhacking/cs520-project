@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 
 function Login() {
   const navigate = useNavigate();
-
   const form = useForm({ mode: "all" });
   const { register, control, handleSubmit, formState, clearErrors, watch } =
     form;
@@ -33,12 +32,28 @@ function Login() {
       .then((res) => {
         if (res.status === 200) {
           const token = res.data.token;
-          localStorage.setItem("token", token)
-          if(res.data.CustomUser.is_doctor) {
-            navigate("/doctor_home");
-          }
-          else {
-            navigate("/patient_home");
+          localStorage.setItem("token", token);
+          const firstName = res.data.CustomUser.first_name
+          const lastName = res.data.CustomUser.last_name
+          const name = firstName + " " + lastName
+          localStorage.setItem("name", name)
+          if (res.data.CustomUser.is_doctor) {
+            localStorage.setItem("doctorId", res.data.Doctor.id);
+            navigate("/doctor_home", {
+              state: {
+                isDoctor: true,
+                username
+              },
+            });
+          } else {
+            localStorage.setItem("patientId", res.data.Patient.id);
+            navigate("/patient_home", {
+              state: {
+                isDoctor: false,
+                patient_name: name,
+                username
+              },
+            });
           }
         } else {
           // Dummy error messages for now. Get actual from backend response
@@ -49,7 +64,6 @@ function Login() {
         }
       })
       .catch((error) => {
-        // fun for debugging
         console.error(error);
       });
   };

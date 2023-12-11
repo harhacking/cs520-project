@@ -117,11 +117,13 @@ def accept_appointment(request,appointment_id):
     if request.method != "POST":
         return HttpResponseNotAllowed(["POST"])
     user = check_token(request)
+
     if not user:
         return HttpResponseForbidden("User is not authenticated")
     if not user.is_doctor:
         return HttpResponseBadRequest("Must be a doctor to accept an appointment")
     doctor = Doctor.objects.get(user=user)
+
     appointment = Appointment.objects.get(pk=appointment_id)
     if appointment.doctor.id != doctor.id:
         return HttpResponseBadRequest("Must be the doctor associated with the appointment to accept")
@@ -155,7 +157,6 @@ def update_notes(request,appointment_id):
   
 @csrf_exempt
 def cancel_appointment(request,appointment_id):
-    print(appointment_id)
     user = check_token(request)
     if not user:
         return HttpResponseForbidden("User is not authenticated")

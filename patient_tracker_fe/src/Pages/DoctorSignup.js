@@ -53,7 +53,7 @@ function DoctorSignup() {
     axios(config)
       .then((res) => {
         console.log(res);
-        navigate("/home");
+        navigate("/doctor_home");
       })
       .catch((e) => {
         console.log(e);

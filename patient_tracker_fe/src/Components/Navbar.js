@@ -1,38 +1,40 @@
 import classes from "../Styles/Navbar.module.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Link } from "react-router-dom";
-function Navbar() {
+import axiosInstance from "./AxiosInstance";
+
+function Navbar(props) {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
   function logoutHandler() {
-    axios
-      .post("http://127.0.0.1:8000/logout/", {
-        headers: {
-          Authorization: `Token ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        navigate("/");
-        localStorage.removeItem("token")
-        console.log("token after deleting", localStorage.getItem("token"));
-      });
+    axiosInstance.post("logout/").then((res) => {
+      navigate("/");
+      localStorage.removeItem("token");
+    });
   }
 
   return (
     <header>
       <nav>
-        <p>PatientTracker</p>
-        <div className = {classes.actions}>
         <p>
-          <Link className={classes.profileLink} to={`/account/testuser`}>
-            Profile
+          <Link
+            to={props.is_doctor ? "/doctor_home" : "/patient_home"}
+            state={{ username: props.username, is_doctor: props.is_doctor }}
+          >
+            Patient Tracker
           </Link>
         </p>
-        <button onClick={logoutHandler}>Logout</button>
+        <div className={classes.actions}>
+          <p>
+            <Link
+              className={classes.profileLink}
+              to={`/account/${props.username}`}
+              state={{ username: props.username, is_doctor: props.is_doctor }}
+            >
+              Profile
+            </Link>
+          </p>
+          <button onClick={logoutHandler}>Logout</button>
         </div>
-        
       </nav>
     </header>
   );

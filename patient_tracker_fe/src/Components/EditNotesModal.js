@@ -3,14 +3,17 @@ import axios from "axios";
 import classes from "../Styles/EditNotesModal.module.css";
 
 function EditNotesModal(props) {
-  const { appointmentId, patient_notes } = props;
-  const [editNote, setEditNote] = useState(patient_notes);
+  const { appointmentId, patient_notes, doctor_notes, isPatient } = props;
+  const [editNote, setEditNote] = useState(isPatient ? patient_notes : "");
   const token = localStorage.getItem("token");
 
+  const notes = isPatient ? "patient_notes" : "doctor_notes";
+
+  const isDisabled = (isPatient ? patient_notes : doctor_notes) === editNote
+
   function updateNote() {
-    console.log(editNote);
     const data = {
-      patient_notes: editNote,
+      [notes]: editNote,
     };
     axios
       .put(
@@ -24,10 +27,12 @@ function EditNotesModal(props) {
         }
       )
       .then((res) => {
+        props.setToastMessage(res.data.message);
         props.setEditNotesModal(false);
         props.getAppointments();
       })
       .catch((e) => {
+        console.log(e);
         props.setEditNotesModal(false);
       });
   }
@@ -36,12 +41,15 @@ function EditNotesModal(props) {
     <div className={classes.editNotesModalContainer}>
       <div className={classes.editNotesModal}>
         <textarea
-          placeholder="Edit..."
+          placeholder={isPatient ? "Edit..." : "Add your note"}
           value={editNote}
           onChange={(e) => setEditNote(e.target.value)}
         ></textarea>
         <div className={classes.modalButtons}>
-          <button onClick={updateNote} disabled={editNote === patient_notes}>
+          <button
+            onClick={updateNote}
+            disabled={isDisabled}
+          >
             Save
           </button>
           <button onClick={() => props.setEditNotesModal(false)}>Cancel</button>

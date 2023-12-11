@@ -1,17 +1,23 @@
 import { useState } from "react";
 import classes from "../Styles/AppointmentCard.module.css";
 import EditNotesModal from "./EditNotesModal";
+import axios from "axios";
 
 function AppointmentCard(props) {
   const {
     doctor_name,
+    doctor_id,
+    patient_name,
     patient_notes,
     doctor_notes,
     isPatient,
     appointmentId,
     appointmentTime,
+    isDoctorNote,
+    pastAppointment,
   } = props;
   const [editNotesModal, setEditNotesModal] = useState(false);
+  const token = localStorage.getItem("token");
 
   function parseDate(milliseconds) {
     const date = new Date(milliseconds);
@@ -29,6 +35,26 @@ function AppointmentCard(props) {
     return formattedDate + " " + formattedTime;
   }
 
+  function acceptAppointment() {
+    axios
+      .post(
+        `http://127.0.0.1:8000/api/appointment/accept/${appointmentId}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
   return (
     <div className={classes.aptCard}>
       {editNotesModal && (
@@ -36,28 +62,45 @@ function AppointmentCard(props) {
           setEditNotesModal={setEditNotesModal}
           appointmentId={appointmentId}
           patient_notes={patient_notes}
+          doctor_notes={doctor_notes}
           getAppointments={props.getAppointments}
+          isPatient={isPatient}
+          setToastMessage={props.setToastMessage}
         />
       )}
       <div className={classes.profile}>
         <p>
-          <span>Dr. {doctor_name}</span>
+          {isPatient && <span>Dr. {doctor_name}</span>}
+          {!isPatient && <span>{patient_name}</span>}
+
           <span>{parseDate(appointmentTime)}</span>
         </p>
       </div>
-      <div className={classes.notes}>
+      <div className={classes.patientNotes}>
         <p>{patient_notes}</p>
         {isPatient && <span onClick={() => setEditNotesModal(true)}>Edit</span>}
       </div>
 
-      {doctor_notes && <div className={classes.notes}>{doctor_notes}</div>}
+      {doctor_notes && (
+        <div className={classes.doctorNotes}>
+          <p>{doctor_notes}</p>
+        </div>
+      )}
 
       <div>
         <div className={classes.actionButtons}>
-          <button onClick={() => props.cancelAppointment(appointmentId)}>
-            Cancel
-          </button>
-          {!isPatient && <button>Accept</button>}
+          {!pastAppointment && (
+            <button onClick={() => props.cancelAppointment(appointmentId)}>
+              Cancel
+            </button>
+          )}
+          {!isPatient && (
+            <button onClick={() => setEditNotesModal(true)}>
+              {isDoctorNote ? "Edit Note" : "Add Note"}
+            </button>
+          )}
+
+          {!isPatient && <button onClick={acceptAppointment}>Accept</button>}
         </div>
       </div>
     </div>

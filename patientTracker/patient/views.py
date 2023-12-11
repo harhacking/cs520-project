@@ -13,10 +13,12 @@ import json
 
 def patient_appointments(request):
     user = check_token(request)
+    print("got request from user", user)
     if not user:
         return HttpResponseForbidden("User is not authenticated")
     start_time = request.GET.get('start_time',None)
     end_time = request.GET.get('end_time',None)
+    print(start_time, end_time)
     try:
         patient = Patient.objects.get(user=user)
         appointments = Appointment.objects.filter(patient=patient)
@@ -25,6 +27,8 @@ def patient_appointments(request):
         if end_time:
             appointments = appointments.filter(appointment_time__lte=end_time)
         appointment_list = []
+        print(end_time)
+        print(appointments)
         for appointment in appointments:
             appointment_list.append(
                 {
