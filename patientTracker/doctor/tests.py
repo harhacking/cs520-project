@@ -23,7 +23,6 @@ class DoctorTestCase(TestCase):
         self.patient = Patient.objects.create(user=self.user2,medical_history="",medications="",diagnoses="",blood_group="",height=1,weight=1)
         self.doctor = Doctor.objects.create(user=self.user, specialization='Test Specialization')
         self.doctor_token = self.get_authentication_token(self.user)
-        self.patient_token = self.get_authentication_token(self.user2)
 
     def get_authentication_token(self,user):
         auth_data = {
