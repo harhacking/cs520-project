@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import patientHumanPng from "../assets/login/patient.png"
+import videoCallPng from "../assets/login/videocall.png"
 
 function Login() {
   const navigate = useNavigate();
@@ -70,7 +72,10 @@ function Login() {
 
   return (
     <div className={classes.loginContainer}>
+      <h1 className={classes.underlineMagical}>Patient Tracker</h1>
       <p>Login</p>
+      <img className={classes.patientHumanPng} src={patientHumanPng} alt="..."/>
+      <img className={classes.videoCallPng} src={videoCallPng} alt="..."/>
       <form
         className={classes.loginForm}
         onSubmit={handleSubmit(loginHandler)}
