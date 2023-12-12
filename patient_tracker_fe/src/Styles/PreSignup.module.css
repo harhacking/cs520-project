@@ -7,6 +7,44 @@
     align-items: center;
 }
 
+.preSignupContainer h1 {
+    font-size: 3rem;
+    position: absolute;
+    top: 20px;
+    margin: 0 auto;
+    text-align: center;
+    width: auto;
+}
+
+.preSignupContainer .underlineMagical {
+    background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    background-repeat: no-repeat;
+    background-size: 100% 0.2em;
+    background-position: 0 88%;
+    width: auto;
+}
+
+.preSignupContainer .plant {
+    position: absolute;
+    height: 250px;
+    left: 0;
+    bottom: 0;
+    filter: drop-shadow(20px 1px 200px rgb(0, 255, 60));
+}
+
+.preSignupContainer .doctor {
+    position: absolute;
+    left: 10rem;
+    bottom: 0;
+}
+
+.preSignupContainer .man {
+    width: 600px;
+    position: absolute;
+    right: -10rem;
+    bottom: 0;
+}
+
 .signupLinksContainer {
     display: flex;
     justify-content: space-evenly;
@@ -37,4 +75,34 @@
     background: white;
     border: 1px solid #1ED760;
     transition: all 0.4s;
+}
+
+/* Media query for tablets */
+@media screen and (max-width: 768px) {
+    .preSignupContainer .man {
+        width: 100%; /* Take full width on tablets */
+        right: 0;
+    }
+
+    .signupLinksContainer {
+        width: 80%; /* Adjust as needed */
+    }
+
+    .newSignupBtn {
+        padding: 2rem; /* Adjust as needed */
+    }
+
+
+.preSignupContainer .plant {
+    height: 200px;
+}
+
+.preSignupContainer .doctor {
+    display: none;
+}
+
+.preSignupContainer .man {
+    display: none;
+}
+
 }

@@ -13,10 +13,12 @@ import json
 
 def patient_appointments(request):
     user = check_token(request)
+    print("got request from user", user)
     if not user:
         return HttpResponseForbidden("User is not authenticated")
     start_time = request.GET.get('start_time',None)
     end_time = request.GET.get('end_time',None)
+    print(start_time, end_time)
     try:
         patient = Patient.objects.get(user=user)
         appointments = Appointment.objects.filter(patient=patient)
@@ -25,6 +27,8 @@ def patient_appointments(request):
         if end_time:
             appointments = appointments.filter(appointment_time__lte=end_time)
         appointment_list = []
+        print(end_time)
+        print(appointments)
         for appointment in appointments:
             appointment_list.append(
                 {
@@ -48,7 +52,6 @@ def register_patient(request):
     try:
         data = json.loads(request.body)
         is_doctor = False
-        
         first_name = data['first_name']
         last_name = data['last_name']
         username = data['username']
@@ -68,15 +71,17 @@ def register_patient(request):
             return JsonResponse({'error': 'Email address is already in use'}, status=400)
         
         user = CustomUser.objects.create_user(username=username,email=email,password=password,is_doctor=is_doctor,first_name=first_name,last_name=last_name)
-        
         patient = Patient.objects.create(user=user,diagnoses=diagnoses,blood_group=blood_group,height=height,weight=weight,medications=medications,medical_history=medical_history)
-        patient.save
+
+        patient.save()
+
         response_data = {
             'success': True,
             'message': 'Patient object created successfully',
             'id': patient.id
         }
         return JsonResponse(response_data,status=201)
+    
     except Exception as e:
         response_data = {
             'success': False,
@@ -95,6 +100,7 @@ def patient_details(request):
             patient = Patient.objects.get(user=user)
             user_obj = model_to_dict(user)
             patient_obj = model_to_dict(patient)
+            print(patient_obj)
             return JsonResponse({"CustomUser": user_obj,"Patient": patient_obj})
         
         except Patient.DoesNotExist:

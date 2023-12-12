@@ -11,9 +11,15 @@ from rest_framework.authtoken.models import Token
 import json
 
 
+def isAuth(request):
+    print("got request...checking....")
+    is_auth = request.user.is_authenticated
+    if is_auth:
+        return JsonResponse({"isAuth": True}, status=200)
+    return JsonResponse({"isAuth": False}, status=200)
+
 @csrf_exempt
 def auth_user(request):
-
     try:
         data = json.loads(request.body)
         username = data['username']
@@ -21,7 +27,7 @@ def auth_user(request):
     except:
         return HttpResponseBadRequest()
     user = authenticate(username=username,password=password)
-    
+    print("user", user)
     if user:
         user_obj = model_to_dict(user)
         return_obj = {"CustomUser": user_obj}
@@ -32,8 +38,7 @@ def auth_user(request):
             patient = Patient.objects.get(user=user)
             return_obj["Patient"] = model_to_dict(patient)
         login(request,user)
-
-        token,created = Token.objects.get_or_create(user=user)
+        token, created = Token.objects.get_or_create(user=user)
         return_obj['token'] = token.key
         
         return JsonResponse(return_obj, status=200)

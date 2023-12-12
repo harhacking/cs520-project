@@ -6,10 +6,49 @@ header {
     width: 100%;
     margin: 0;
     padding: 1rem;
-    background-color: black;
+    background-color: rgb(0,0,0);
     color: white;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1rem;
     font-weight: 500;
+    height: 5rem;
+    z-index: 10000;
+}
+
+header > nav > p {
+    font-size: 1.25rem;
+}
+
+header > nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header > nav * {
+    margin: 0.5rem;
+    font-size: 1rem;
+}
+
+.actions {
+    display: flex;
+    margin-left: auto;
+}
+
+.actions a {
+    text-decoration: none;
+    color: #1ED760;
+}
+
+.actions p {
+    margin-left: auto;
+}
+
+.actions button {
+    background: transparent;
+    color: #1ED760;
+    border: none;
+    cursor: pointer;
+    
 }
 
