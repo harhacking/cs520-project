@@ -9,7 +9,7 @@ function Modal(props) {
   const [patient_notes, setPatientNotes] = useState("");
   const [doctor_id, setDoctorId] = useState("");
   const patient_id = localStorage.getItem("patientId");
-  console.log(patient_id)
+
   let doctorsMap = {};
   doctorsList.forEach((doctor) => {
     doctorsMap[doctor.id] = doctor;
@@ -38,7 +38,6 @@ function Modal(props) {
         }
       )
       .then((res) => {
-        console.log(res)
         setModal(false);
         props.getAppointments();
 

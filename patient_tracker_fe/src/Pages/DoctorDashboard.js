@@ -13,6 +13,8 @@ function DoctorDashboard() {
   const [appointments, setAppointments] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
   const [acceptedAppointments, setAcceptedAppointments] = useState([]);
+  const [date, setDate] = useState("");
+  const [aptReqDate, setAptReqDate] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -89,25 +91,66 @@ function DoctorDashboard() {
       }, 2000);
     }
   }, [toastMessage]);
+
+  function parseDate(milliseconds) {
+    const date = new Date(milliseconds);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear() % 100;
+    const formattedDate = `${day < 10 ? "0" + day : day}/${
+      month < 10 ? "0" + month : month
+    }/${year < 10 ? "0" + year : year}`;
+    return formattedDate;
+  }
+
+  function changeFormat(dateString) {
+    const dateArray = dateString.split("-");
+    return `${dateArray[2]}/${dateArray[1]}/${dateArray[0].substring(2)}`;
+  }
+
+  function renderAppointments(appointmentsList, filterDate) {
+    return appointmentsList
+      .filter((appointment) =>
+        filterDate
+          ? parseDate(appointment.props.appointmentTime) ===
+            changeFormat(filterDate)
+          : appointment.props.is_accepted === true
+      )
+      .map((appointment) => appointment);
+  }
+
   return (
     <div className={classes.doctorDashboardContainer}>
       {acceptedAppointments.length > 0 && (
         <div className={classes.acceptedAppointments}>
+          <div className={classes.filterDateContainer}>
+            <span>Filter By - </span>
+            <input
+              type="date"
+              onChange={(e) => setAptReqDate(e.target.value)}
+            />
+            <button onClick={() => setAptReqDate("")}>Reset</button>
+          </div>
           <h2>Appointment Requests</h2>
-          {acceptedAppointments.map((appointment) => {
-            return appointment;
-          })}
+          {acceptedAppointments.map((appointment) => appointment)}
+          {renderAppointments(appointments, aptReqDate)}
         </div>
       )}
       {toastMessage && <Toast isErrorMessage={false}>{toastMessage}</Toast>}
       <Navbar is_doctor={isDoctor} />
 
-      <div className={classes.allAppointments}>
-        <h2>Accepted Appointments</h2>
-        {appointments.filter((appointment) => {
-          return appointment.props.is_accepted === true;
-        })}
-      </div>
+      {acceptedAppointments.length > 0 && (
+        <div className={classes.allAppointments}>
+          <div className={classes.filterDateContainer}>
+            <span>Filter By - </span>
+            <input type="date" onChange={(e) => setDate(e.target.value)} />
+            <button onClick={() => setDate("")}>Reset</button>
+          </div>
+          <h2>Accepted Appointments</h2>
+
+          {renderAppointments(appointments, date)}
+        </div>
+      )}
     </div>
   );
 }
