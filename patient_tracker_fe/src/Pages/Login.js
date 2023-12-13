@@ -2,10 +2,10 @@
 import classes from "../Styles/Login.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import patientHumanPng from "../assets/login/patient.png"
-import videoCallPng from "../assets/login/videocall.png"
+import patientHumanPng from "../assets/login/patient.png";
+import videoCallPng from "../assets/login/videocall.png";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,10 +16,7 @@ function Login() {
 
   const username = watch("username", "");
   const password = watch("password", "");
-  const [formErrors, setFormErrors] = useState({
-    usernameError: "",
-    passwordError: "",
-  });
+  const [credError, setCredError] = useState("");
 
   const loginHandler = (e) => {
     const data = {
@@ -35,16 +32,16 @@ function Login() {
         if (res.status === 200) {
           const token = res.data.token;
           localStorage.setItem("token", token);
-          const firstName = res.data.CustomUser.first_name
-          const lastName = res.data.CustomUser.last_name
-          const name = firstName + " " + lastName
-          localStorage.setItem("name", name)
+          const firstName = res.data.CustomUser.first_name;
+          const lastName = res.data.CustomUser.last_name;
+          const name = firstName + " " + lastName;
+          localStorage.setItem("name", name);
           if (res.data.CustomUser.is_doctor) {
             localStorage.setItem("doctorId", res.data.Doctor.id);
             navigate("/doctor_home", {
               state: {
                 isDoctor: true,
-                username
+                username,
               },
             });
           } else {
@@ -53,20 +50,14 @@ function Login() {
               state: {
                 isDoctor: false,
                 patient_name: name,
-                username
+                username,
               },
             });
           }
-        } else {
-          // Dummy error messages for now. Get actual from backend response
-          setFormErrors({
-            usernameError: "Username error",
-            passwordError: "Password error",
-          });
         }
       })
       .catch((error) => {
-        console.error(error);
+        setCredError(error.response.data);
       });
   };
 
@@ -74,8 +65,12 @@ function Login() {
     <div className={classes.loginContainer}>
       <h1 className={classes.underlineMagical}>Patient Tracker</h1>
       <p>Login</p>
-      <img className={classes.patientHumanPng} src={patientHumanPng} alt="..."/>
-      <img className={classes.videoCallPng} src={videoCallPng} alt="..."/>
+      <img
+        className={classes.patientHumanPng}
+        src={patientHumanPng}
+        alt="..."
+      />
+      <img className={classes.videoCallPng} src={videoCallPng} alt="..." />
       <form
         className={classes.loginForm}
         onSubmit={handleSubmit(loginHandler)}
@@ -91,9 +86,7 @@ function Login() {
               required: "Username cannot be empty",
             })}
           />
-          <p className={classes.errorMessage}>
-            {errors.username?.message || formErrors.usernameError}
-          </p>
+          <p className={classes.errorMessage}>{errors.username?.message}</p>
         </div>
         <div className={classes.password}>
           <label htmlFor="password">Password</label>
@@ -103,21 +96,9 @@ function Login() {
             value={password}
             {...register("password", {
               required: "Password cannot be empty",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
-              pattern: {
-                value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-                message:
-                  "Must contain at least 1 upper and lowercase letter, one digit, and 1 special character",
-              },
             })}
           />
-          <p className={classes.errorMessage}>
-            {errors.password?.message || formErrors.passwordError}
-          </p>
+          <p className={classes.errorMessage}>{errors.password?.message}</p>
         </div>
 
         <button type="submit">Login</button>
@@ -125,6 +106,7 @@ function Login() {
       <p>
         Don't have an account? <Link to="/PreSignup">Sign up</Link>
       </p>
+      {credError && <p className={classes.errorMessage}>{credError}</p>}
     </div>
   );
 }

@@ -2,9 +2,13 @@ import classes from "../Styles/Signup.module.css";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 function PatientSignup() {
   const navigate = useNavigate();
+  const form = useForm({ mode: "all" });
+  const { register, handleSubmit, formState, watch, getValues } = form;
+  const { errors } = formState;
   const [signupData, setSignupData] = useState({
     first_name: "",
     last_name: "",
@@ -19,7 +23,7 @@ function PatientSignup() {
     weight: "",
   });
 
-  function register(event) {
+  function signup(event) {
     event.preventDefault();
     axios
       .post(
@@ -184,7 +188,7 @@ function PatientSignup() {
           </div>
         </div>
 
-        <button type="submit" onClick={register}>
+        <button type="submit" onClick={signup}>
           Signup
         </button>
       </form>

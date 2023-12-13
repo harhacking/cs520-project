@@ -8,11 +8,12 @@ function DoctorSignup() {
   const form = useForm({ mode: "all" });
   const { register, handleSubmit, formState, watch, getValues } = form;
   const { errors } = formState;
-
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({
     usernameError: "",
   });
+
+  const [credError, setCredError ] = useState("");
 
   const first_name = watch("first_name");
   const last_name = watch("last_name");
@@ -20,6 +21,7 @@ function DoctorSignup() {
   const password = watch("password");
   const email = watch("email");
   const specialization = watch("specialization");
+  const confirmPassword = watch("confirmPassword");
 
   function passwordMatch() {
     if (
@@ -28,7 +30,7 @@ function DoctorSignup() {
     ) {
       return <p className={classes.errorMessage}>Passwords do not match</p>;
     }
-    return null;
+    return <p></p>;
   }
 
   function signup(event) {
@@ -52,11 +54,10 @@ function DoctorSignup() {
 
     axios(config)
       .then((res) => {
-        console.log(res);
         navigate("/doctor_home");
       })
       .catch((e) => {
-        console.log(e);
+        setCredError(e.response.data.error);
       });
   }
 
@@ -189,6 +190,7 @@ function DoctorSignup() {
       <p>
         Already a user? <Link to="/">Login</Link>
       </p>
+      {credError && <p className={classes.errorMessage}>{credError}</p>}
     </div>
   );
 }
