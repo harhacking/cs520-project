@@ -38,7 +38,7 @@ def auth_user(request):
         
         return JsonResponse(return_obj, status=200)
     else:       
-        return HttpResponseForbidden()
+        return HttpResponseBadRequest("The username and/or password is incorrect.")
     
 @csrf_exempt
 def logout_user(request):
