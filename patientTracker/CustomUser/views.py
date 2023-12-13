@@ -29,17 +29,14 @@ def auth_user(request):
     user = authenticate(username=username,password=password)
     print("user", user)
     if user:
-        id = None
-        return_obj = None
         user_obj = model_to_dict(user)
+        return_obj = {"CustomUser": user_obj}
         if(user.is_doctor):
             doctor = Doctor.objects.get(user=user)
-            return_obj = {"CustomUser": user_obj,
-                        "Doctor": model_to_dict(doctor)}
+            return_obj["Doctor"] = model_to_dict(doctor)
         else:
             patient = Patient.objects.get(user=user)
-            return_obj = {"CustomUser": user_obj,
-                        "Patient": model_to_dict(patient)}
+            return_obj["Patient"] = model_to_dict(patient)
         login(request,user)
         token, created = Token.objects.get_or_create(user=user)
         return_obj['token'] = token.key
