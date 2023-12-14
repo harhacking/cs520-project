@@ -10,7 +10,8 @@ from django.http import JsonResponse, HttpResponseNotAllowed,HttpResponseForbidd
 import json
 
 
-
+# returns list of all appointments
+# has optional time params to limit search
 def patient_appointments(request):
     user = check_token(request)
     if not user:
@@ -41,6 +42,7 @@ def patient_appointments(request):
         return JsonResponse({'error': 'Patient not found'}, status=404)
 
 
+# creates a new patient user
 @csrf_exempt
 def register_patient(request):
     if request.method != "POST":
@@ -84,7 +86,8 @@ def register_patient(request):
             'id': -1
         }
         return JsonResponse(response_data,status=400)
-    
+
+# get/update patient information 
 @csrf_exempt
 def patient_details(request):
     user = check_token(request)

@@ -14,11 +14,12 @@ import json
 
 ms_hour = int(timedelta(hours=1).total_seconds() * 1000)
 
-
+# convert epoch ms to datatime object
 def epoch_milliseconds_to_datetime(epoch_milliseconds):
     return datetime.utcfromtimestamp(epoch_milliseconds / 1000)
 
-
+# return available appointment times for a doctor in a time range
+# assumes working hours are Mon-Fri 9am-5pm
 def available_appointment_times(request, doctor_id):
     user = check_token(request)
     if not user:
@@ -64,6 +65,7 @@ def available_appointment_times(request, doctor_id):
 
     return JsonResponse({"available_times": available_times})
 
+# creates an appointment
 @csrf_exempt
 def create_appointment(request):
     user = check_token(request)
@@ -114,6 +116,8 @@ def create_appointment(request):
         }
         return JsonResponse(response_data,status=400)
 
+
+# allows doctor to accept an appointment
 @csrf_exempt
 def accept_appointment(request,appointment_id):
     if request.method != "POST":
@@ -131,6 +135,7 @@ def accept_appointment(request,appointment_id):
     appointment.save()
     return JsonResponse({"msg":"Appointment accepted successfully"},status=200)
     
+# allows user to update patient/doctor note
 @csrf_exempt
 def update_notes(request,appointment_id):
     appointment = get_object_or_404(Appointment,pk=appointment_id)
@@ -153,7 +158,8 @@ def update_notes(request,appointment_id):
     appointment.save()
     return JsonResponse({"message":"Notes updated successfully"},status=200)
 
-  
+
+# allows user to cancel their own appointment 
 @csrf_exempt
 def cancel_appointment(request,appointment_id):
     user = check_token(request)
