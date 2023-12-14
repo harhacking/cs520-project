@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token
 
 import json
 
-
+# attempts to log user in and creates/returns authorization token for that user
 @csrf_exempt
 def auth_user(request):
 

@@ -10,7 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from patient.models import Patient
 
-
+# returns list of all appointments
+# has optional time params to limit search
 def doctor_appointments(request):
     user = check_token(request)
     if not user:
@@ -40,7 +41,7 @@ def doctor_appointments(request):
     except Doctor.DoesNotExist:
         return JsonResponse({'error': 'Doctor not found'}, status=404)
     
-    
+# allows doctor to view a patient's information    
 def view_patient_details(request,patient_id):
     user = check_token(request)
     if not user:
@@ -57,7 +58,8 @@ def view_patient_details(request,patient_id):
     
     except Patient.DoesNotExist:
         return JsonResponse({'error': 'Patient not found'}, status=404)
-    
+
+# get/update a doctor's information
 @csrf_exempt
 def doctor_details(request):
     user = check_token(request)
@@ -105,6 +107,7 @@ def doctor_details(request):
     else:
         return HttpResponseNotAllowed(["GET","PUT"])
 
+# createa a new doctor user
 @csrf_exempt
 def register_doctor(request):
     if request.method != "POST":
@@ -144,6 +147,7 @@ def register_doctor(request):
         }
         return JsonResponse(response_data,status=400)
 
+# returns list of all doctors names and specializations
 def list_doctors(request):
     if request.method != "GET":
         return HttpResponseNotAllowed(["GET"])
