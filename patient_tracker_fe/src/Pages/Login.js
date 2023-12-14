@@ -1,87 +1,120 @@
+// import Navbar from "../Components/Navbar";
 import classes from "../Styles/Login.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState, useEffect } from 'react';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import patientHumanPng from "../assets/login/patient.png";
+import videoCallPng from "../assets/login/videocall.png";
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [blank, setBlank] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (username.length === 0 || password.length === 0){
-      setBlank(true);
-    } else {
-      setBlank(false);
-    }
-  }, [username, password])
+  // React Hook Form for form management
+  const form = useForm({ mode: "all" });
+  const { register, control, handleSubmit, formState, clearErrors, watch } =
+    form;
+  const { errors, isDirty, isValid } = formState;
 
-  const login = (e) => {
-    e.preventDefault();
+  // Watch for changes in the username and password fields
+  const username = watch("username", "");
+  const password = watch("password", "");
 
-  if (blank) {
-    setError('Please fill in both username and password fields.');
-    return;
-  }
+  // State for displaying credential errors
+  const [credError, setCredError] = useState("");
 
-  const data = {
-    username: username,
-    password: password,
+  // Handler function for the login form submission
+  const loginHandler = (e) => {
+    const data = {
+      username: username,
+      password: password,
+    };
+
+    // Sending a POST request to the authentication endpoint
+    axios
+      .post("http://127.0.0.1:8000/auth/", JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          const token = res.data.token;
+          localStorage.setItem("token", token);
+          const firstName = res.data.CustomUser.first_name;
+          const lastName = res.data.CustomUser.last_name;
+          const name = firstName + " " + lastName;
+          localStorage.setItem("name", name);
+          if (res.data.CustomUser.is_doctor) {
+            localStorage.setItem("doctorId", res.data.Doctor.id);
+            navigate("/doctor_home", {
+              state: {
+                isDoctor: true,
+                username,
+              },
+            });
+          } else {
+            localStorage.setItem("patientId", res.data.Patient.id);
+            navigate("/patient_home", {
+              state: {
+                isDoctor: false,
+                patient_name: name,
+                username,
+              },
+            });
+          }
+        }
+      })
+      .catch((error) => {
+        setCredError(error.response.data);
+      });
   };
 
-  axios
-    .post("http://127.0.0.1:8000/auth/", data, {
-      headers: { 'Content-Type': 'application/json'}
-    })
-    .then((res) => {
-      if (res.status === 200) {
-        // successful login
-        // send user to dashboard
-        // for now:
-        console.log('login successful')
-      } else {
-        // unsuccessful login
-        setError("Login failed. Please check username and password.")
-      }
-    })
-    .catch((error) => {
-      // fun for debugging
-      console.error(error);
-      setError('error occured which logging in.')
-    });
-  };
-
+  // Render the login form
   return (
     <div className={classes.loginContainer}>
+      <h1 className={classes.underlineMagical}>Patient Tracker</h1>
       <p>Login</p>
-      <form className={classes.loginForm}>
+      <img
+        className={classes.patientHumanPng}
+        src={patientHumanPng}
+        alt="..."
+      />
+      <img className={classes.videoCallPng} src={videoCallPng} alt="..." />
+      <form
+        className={classes.loginForm}
+        onSubmit={handleSubmit(loginHandler)}
+        noValidate
+      >
         <div className={classes.username}>
           <label htmlFor="username">Username</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             id="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            {...register("username", {
+              required: "Username cannot be empty",
+            })}
           />
+          <p className={classes.errorMessage}>{errors.username?.message}</p>
         </div>
         <div className={classes.password}>
           <label htmlFor="password">Password</label>
-          <input 
+          <input
             type="password"
-            id="password" 
+            id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password", {
+              required: "Password cannot be empty",
+            })}
           />
+          <p className={classes.errorMessage}>{errors.password?.message}</p>
         </div>
-        {error && <p className={classes.errorMsg}>{error}</p>}
-        <button type="submit" onClick={login}>
-          Login
-        </button>
+
+        <button type="submit">Login</button>
       </form>
       <p>
         Don't have an account? <Link to="/PreSignup">Sign up</Link>
       </p>
+      {credError && <p className={classes.errorMessage}>{credError}</p>}
     </div>
   );
 }

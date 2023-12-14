@@ -76,4 +76,12 @@
 .signupContainer .errorMessage {
     color: rgb(255, 62, 62);
     font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .signupForm {
+        width: 90%; /* Adjust as needed for tablets */
+    }
 }

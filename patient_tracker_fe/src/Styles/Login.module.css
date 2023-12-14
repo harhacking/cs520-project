@@ -1,84 +1,135 @@
 .loginContainer {
-    width: 100vw;
-    max-width: 100%;
-    height: 100vh;
-    max-height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: 100vw;
+  max-width: 100%;
+  height: 100vh;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.loginContainer > p:first-child {
-    font-size: 2rem;
-    font-weight: 500;
-    margin: 0 0 0.5rem 0;
+.loginContainer h1 {
+  font-size: 3rem;
+  position: absolute;
+  top: 20px;
+  margin: 0 auto;
+  text-align: center;
+  width: auto;
+}
+
+.loginContainer .underlineMagical {
+  background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 0.2em;
+  background-position: 0 88%;
+  width: auto;
+}
+
+.loginContainer .patientHumanPng {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.loginContainer .videoCallPng {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+h1.underlineMagical + p {
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
 }
 
 .loginForm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid black;
-    width: 30%;
-    height: 40%;
-    border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  width: 30%;
+  height: 40%;
+  border-radius: 5px;
 }
 
-.username, .password {
-    width: 70%;
-    display: flex;
-    flex-direction: column;
+.username,
+.password {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
 }
 
-.username > *, .password > * {
-    display: block;
-    font-size: 1rem;
+.username > *,
+.password > * {
+  display: block;
+  font-size: 1rem;
 }
 
-.username label, .password label {
-    margin-bottom: 0.2rem;
-    color: black;
+.username label,
+.password label {
+  margin-bottom: 0.2rem;
+  color: black;
 }
 
 .loginForm input {
-    border: 1px solid black;
-    border-radius: 2px;
-    padding: 0.5rem;
+  border: 1px solid black;
+  border-radius: 2px;
+  padding: 0.5rem;
 }
 
 .loginForm input:focus {
-    border: 1px solid transparent;
-    outline: 1px solid #1ED760;
+  border: 1px solid transparent;
+  outline: 1px solid #1ed760;
 }
 
 .loginForm button {
-    display: block;
-    margin: 0 auto;
-    width: 70%;
-    padding: 0.65rem;
-    margin-top: 1rem;
-    background-color: #1ED760;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    border: 1px solid transparent;
+  display: block;
+  margin: 0 auto;
+  width: 70%;
+  padding: 0.65rem;
+  margin-top: 1rem;
+  background-color: #1ed760;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .loginForm button:hover {
-    background-color: white;
-    border: 1px solid #1ED760;
-    transition: all 0.4s;
+  background-color: white;
+  border: 1px solid #1ed760;
+  transition: all 0.4s;
 }
 
 .loginContainer p {
-    margin-top: 0.4rem;
-    font-weight: 500;
+  margin-top: 0.4rem;
+  font-weight: 500;
 }
 
-.loginContainer .errorMessage {
-    color: rgb(255, 62, 62);
-    font-size: 12px;
-    margin-bottom: 1rem;
+.errorMessage {
+  color: rgb(255, 62, 62);
+  font-size: 12px;
+  margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .loginContainer .patientHumanPng,
+  .loginContainer .videoCallPng {
+    width: 100%; /* Take full width on tablets */
+  }
+
+  .loginContainer h1 {
+    font-size: 2rem;
+  }
+
+  .loginForm {
+    width: 75%; /* Adjust as needed for tablets */
+  }
+
+  .loginContainer img {
+    display: none;
+  }
 }

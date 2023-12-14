@@ -18,11 +18,13 @@ from django.urls import path
 from doctor.views import view_patient_details,doctor_appointments,register_doctor,doctor_details,list_doctors
 from appointment.views import available_appointment_times, create_appointment,cancel_appointment,update_notes, accept_appointment
 from patient.views import patient_details,register_patient,patient_appointments
-from CustomUser.views import auth_user,logout_user
+from CustomUser.views import auth_user,logout_user,isAuth
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/',auth_user),
+    path('isAuth/',isAuth),
+
     path('logout/',logout_user),
     
     path('api/doctor/register/',register_doctor,name="register doctor"),
