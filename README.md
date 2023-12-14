@@ -10,5 +10,7 @@ The frontend runs on react, as such make sure npm is installed (can be found her
 **Backend**
 The backend runs on python, make sure that is installed. Once it is, go into the backend directory and run "pip install -r requirements.txt". This will install most of the dependencies for the backend. However you will not be able to run the backend as you need a *.env* file we are not providing. This file included the fields "DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT, DB_USER, FIELD_ENCRYPTION_KEY". This allows for secure communication with the database.
 
+You also have to use a postgres db and fill out all the info in the env and generate a new encryption key. Furthermore you need to use the command `python manage.py makemigrations` and then `python manage.py migrate` to create all the tables in the db.
+
 **Running both**
 Once all dependencies are installed, in the topmost directory, you can simply run "run.sh" to start both of them up at the same time. Or you can start them independently by going into the backend directory and running "python manage.py runserver" and then going to the frontend directory and running "npm start". To stop either, simply ctrl c 
