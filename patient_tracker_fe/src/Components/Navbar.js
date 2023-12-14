@@ -24,7 +24,7 @@ function Navbar(props) {
           </Link>
         </p>
         <div className={classes.actions}>
-          <p>
+          {!props.is_doctor && <p>
             <Link
               className={classes.profileLink}
               to={`/account/${props.username}`}
@@ -32,7 +32,7 @@ function Navbar(props) {
             >
               Profile
             </Link>
-          </p>
+          </p>}
           <button onClick={logoutHandler}>Logout</button>
         </div>
       </nav>

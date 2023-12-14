@@ -5,6 +5,7 @@ import axios from "axios";
 import classes from "../Styles/DoctorDashboard.module.css";
 import Toast from "../Components/Toast";
 import { useLocation } from "react-router";
+import axiosInstance from "../Components/AxiosInstance";
 
 function DoctorDashboard() {
   const { state } = useLocation();
@@ -21,6 +22,18 @@ function DoctorDashboard() {
   const get_appointments_url = isDoctor
     ? `http://127.0.0.1:8000/api/doctor/appointments/`
     : `http://127.0.0.1:8000/api/patient/appointments/`;
+
+  function cancelAppointment(id) {
+    axiosInstance
+      .delete(`api/appointment/cancel/${id}`)
+      .then((res) => {
+        alert("appointment deleted");
+        getAppointments();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
 
   function getAppointments() {
     axios
@@ -41,13 +54,14 @@ function DoctorDashboard() {
               patient_notes={appointment.patient_notes}
               doctor_notes={appointment.doctor_notes}
               isPatient={!isDoctor}
-              //   cancelAppointment={cancelAppointment}
               appointmentId={appointment.id}
               appointmentTime={appointment.appointment_time}
               getAppointments={getAppointments}
               isDoctorNote={appointment?.doctor_notes}
               setToastMessage={setToastMessage}
               is_accepted={appointment.is_accepted}
+              fetchAppointments={getAppointments}
+              cancelAppointment={cancelAppointment}
             />
           );
         });
@@ -56,11 +70,12 @@ function DoctorDashboard() {
         const acceptedAppointmentsJSX = [];
 
         res.data.appointments.forEach((appointment) => {
-          if (appointment.is_accepted === false) {
+          if (appointment.is_accepted === true) {
             acceptedAppointmentsJSX.push(
               <AppointmentCard
                 key={appointment.id}
                 doctor_id={doctor_id}
+                patient_id={appointment.patient_id}
                 doctor_name={appointment.doctor_name}
                 patient_name={appointment.patient_name}
                 patient_notes={appointment.patient_notes}
@@ -72,6 +87,8 @@ function DoctorDashboard() {
                 isDoctorNote={appointment?.doctor_notes}
                 setToastMessage={setToastMessage}
                 is_accepted={appointment.is_accepted}
+                fetchAppointments={getAppointments}
+                cancelAppointment={cancelAppointment}
               />
             );
           }
@@ -103,25 +120,22 @@ function DoctorDashboard() {
     return formattedDate;
   }
 
-  function changeFormat(dateString) {
-    const dateArray = dateString.split("-");
-    return `${dateArray[2]}/${dateArray[1]}/${dateArray[0].substring(2)}`;
-  }
+  let changeFormat = (dateString) => {
+    let dateArray = dateString.split("-");
 
-  function renderAppointments(appointmentsList, filterDate) {
-    return appointmentsList
-      .filter((appointment) =>
-        filterDate
-          ? parseDate(appointment.props.appointmentTime) ===
-            changeFormat(filterDate)
-          : appointment.props.is_accepted === true
-      )
-      .map((appointment) => appointment);
-  }
+    let formdattedDate = `${dateArray[2]}/${
+      dateArray[1]
+    }/${dateArray[0].substring(2)}`;
+    //  dd/mm/yy
 
+    console.log("formdattedDate", formdattedDate);
+    return formdattedDate;
+  };
+
+  console.log(date);
   return (
     <div className={classes.doctorDashboardContainer}>
-      {acceptedAppointments.length > 0 && (
+      {appointments.length > 0 && (
         <div className={classes.acceptedAppointments}>
           <div className={classes.filterDateContainer}>
             <span>Filter By - </span>
@@ -132,8 +146,16 @@ function DoctorDashboard() {
             <button onClick={() => setAptReqDate("")}>Reset</button>
           </div>
           <h2>Appointment Requests</h2>
-          {acceptedAppointments.map((appointment) => appointment)}
-          {renderAppointments(appointments, aptReqDate)}
+          {aptReqDate
+            ? appointments.filter((appointment) => {
+                return (
+                  parseDate(appointment.props.appointmentTime) ===
+                  changeFormat(aptReqDate)
+                );
+              })
+            : appointments.filter((appointment) => {
+                return appointment.props.is_accepted === false;
+              })}
         </div>
       )}
       {toastMessage && <Toast isErrorMessage={false}>{toastMessage}</Toast>}
@@ -148,7 +170,16 @@ function DoctorDashboard() {
           </div>
           <h2>Accepted Appointments</h2>
 
-          {renderAppointments(appointments, date)}
+          {date
+            ? acceptedAppointments.filter((appointment) => {
+                return (
+                  parseDate(appointment.props.appointmentTime) ===
+                  changeFormat(date)
+                );
+              })
+            : acceptedAppointments.filter((appointment) => {
+                return appointment.props.is_accepted === true;
+              })}
         </div>
       )}
     </div>

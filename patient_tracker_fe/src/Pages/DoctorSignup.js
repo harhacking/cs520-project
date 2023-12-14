@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 function DoctorSignup() {
+  // React Hook Form for form management
   const form = useForm({ mode: "all" });
   const { register, handleSubmit, formState, watch, getValues } = form;
   const { errors } = formState;
@@ -13,8 +14,11 @@ function DoctorSignup() {
     usernameError: "",
   });
 
+  // State for displaying credential errors
   const [credError, setCredError ] = useState("");
 
+
+  // Watch for changes in form fields
   const first_name = watch("first_name");
   const last_name = watch("last_name");
   const username = watch("username");
@@ -23,6 +27,7 @@ function DoctorSignup() {
   const specialization = watch("specialization");
   const confirmPassword = watch("confirmPassword");
 
+  // Function to check if passwords match
   function passwordMatch() {
     if (
       getValues("confirmPassword") &&
@@ -33,6 +38,7 @@ function DoctorSignup() {
     return <p></p>;
   }
 
+   // Function to handle signup form submission
   function signup(event) {
     const data = {
       first_name: first_name,
@@ -61,6 +67,7 @@ function DoctorSignup() {
       });
   }
 
+   // Render the DoctorSignup component
   return (
     <div className={classes.signupContainer}>
       <p>Signup</p>

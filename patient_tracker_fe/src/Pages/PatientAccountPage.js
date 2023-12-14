@@ -6,14 +6,17 @@ import classes from "../Styles/PatientAccountPage.module.css";
 import { useLocation, useNavigate } from "react-router";
 import axiosInstance from "../Components/AxiosInstance";
 
+// Valid blood groups for validation
 const validBloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
+// Validation function for blood group
 const validateBloodGroup = (value) => {
   return (
     validBloodGroups.includes(value.toUpperCase()) || "Invalid blood group"
   );
 };
 
+// Validation rules for numeric inputs
 const inputValidationRules = {
   required: "Cannot be empty",
   pattern: {
@@ -40,6 +43,7 @@ function PatientAccountPage() {
   const { errors } = formState;
   const [toastMessage, setToastMessage] = useState("");
 
+  // Fetch user data on component mount
   useEffect(() => {
     axiosInstance
       .get("api/patient/details/")
@@ -56,6 +60,7 @@ function PatientAccountPage() {
       });
   }, []);
 
+  // Hide toast message after 2 seconds
   useEffect(() => {
     if (toastMessage !== "") {
       const timer = setTimeout(() => {
@@ -65,6 +70,7 @@ function PatientAccountPage() {
     }
   }, [toastMessage]);
 
+  // Update user data state on input change
   const editPatientDetails = (e) => {
     setUserData((prevUserData) => ({
       ...prevUserData,
@@ -72,6 +78,7 @@ function PatientAccountPage() {
     }));
   };
 
+  // Handle the edit profile form submission
   const editProfileHandler = () => {
     const data = JSON.stringify(userData);
     axiosInstance
@@ -84,12 +91,15 @@ function PatientAccountPage() {
       });
   };
 
+  // Render the patient account page
   return (
     <div className={classes.accountPageContainer}>
       {toastMessage && <Toast isErrorMessage={false}>{toastMessage}</Toast>}
       <Navbar username={state.username} is_doctor={state.is_doctor} />
       <form noValidate onSubmit={handleSubmit(editProfileHandler)}>
         <h1>Welcome, {localStorage.getItem("name")}</h1>
+        {/* Input fields for height, weight, blood group, diagnoses, medical history, and medications */}
+        {/* ... (similar structure for other input fields) */}
         <div className={classes.groupsOfTwo}>
           <div className={classes.detail}>
             <label>Height</label>

@@ -7,14 +7,16 @@ import { useLocation, useNavigate } from "react-router";
 import axiosInstance from "../Components/AxiosInstance";
 
 function PatientDashboard() {
-  const {state} = useLocation()
+  const { state } = useLocation();
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [doctorsList, setDoctorsList] = useState([]);
   const [modal, setModal] = useState(false);
 
+  // Function to fetch upcoming appointments for the patient
   function getAppointments() {
+    // Get all appointments starting from now on
     const start_time = new Date().getTime();
 
     axiosInstance
@@ -34,7 +36,9 @@ function PatientDashboard() {
       });
   }
 
+  // Function to fetch past appointments for the patient
   function getPastAppointments() {
+    // Get all appointments till now
     const end_time = new Date().getTime();
 
     axiosInstance
@@ -54,6 +58,7 @@ function PatientDashboard() {
       });
   }
 
+  // Function to fetch the list of available doctors
   function getDoctors() {
     axiosInstance
       .get("api/doctor/list/")
@@ -80,6 +85,7 @@ function PatientDashboard() {
       });
   }
 
+  // Get appointments and doctors list when page loads
   useEffect(() => {
     getAppointments();
     getPastAppointments();
@@ -88,8 +94,10 @@ function PatientDashboard() {
 
   return (
     <div className={classes.patientDashboardContainer}>
+      {/* Button to open appointment creation modal */}
       <button onClick={() => setModal(true)}>Create Appointment</button>
 
+      {/* Displaying past appointments */}
       <div className={classes.pastAppointments}>
         <h2>Past Appointments</h2>
 
@@ -108,7 +116,11 @@ function PatientDashboard() {
           />
         ))}
       </div>
-      <Navbar username={state.username} is_doctor={state.is_doctor}/>
+
+      {/* Navbar component with user information */}
+      <Navbar username={state.username} is_doctor={state.is_doctor} />
+
+      {/* Modal component for creating appointments */}
       {modal && (
         <Modal
           setModal={setModal}
@@ -116,6 +128,8 @@ function PatientDashboard() {
           getAppointments={getAppointments}
         />
       )}
+
+      {/* Displaying upcoming appointments */}
       <div className={classes.upcomingAppointments}>
         <h2>Upcoming Appointments</h2>
         {appointments.map((appointment, index) => (

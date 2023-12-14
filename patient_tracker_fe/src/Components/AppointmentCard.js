@@ -2,11 +2,14 @@ import { useState } from "react";
 import classes from "../Styles/AppointmentCard.module.css";
 import EditNotesModal from "./EditNotesModal";
 import axios from "axios";
+import axiosInstance from "./AxiosInstance";
+import PatientDetailsModal from "./PatientDetailsModal";
 
 function AppointmentCard(props) {
   const {
     doctor_name,
     doctor_id,
+    patient_id,
     patient_name,
     patient_notes,
     doctor_notes,
@@ -15,8 +18,13 @@ function AppointmentCard(props) {
     appointmentTime,
     isDoctorNote,
     pastAppointment,
+    fetchAppointments
+
   } = props;
   const [editNotesModal, setEditNotesModal] = useState(false);
+  const [patientDetailsModal, setPatientDetailsModal] = useState(false);
+  const [patientData, setPatientData] = useState({});
+
   const token = localStorage.getItem("token");
 
   function parseDate(milliseconds) {
@@ -48,15 +56,28 @@ function AppointmentCard(props) {
         }
       )
       .then((res) => {
-        console.log(res);
+        fetchAppointments()
       })
       .catch((e) => {
         console.log(e);
       });
   }
 
+  function getPatientDetails() {
+    axiosInstance.get(`api/doctor/view/patient/${patient_id}/`)
+    .then(res => {
+      setPatientData(res.data.Patient)
+      setPatientDetailsModal(true)
+
+    })
+    .catch(e => console.log(e))
+  }
+
   return (
     <div className={classes.aptCard}>
+      {patientDetailsModal && <PatientDetailsModal patientData={patientData} 
+      setPatientDetailsModal={setPatientDetailsModal}
+      />}
       {editNotesModal && (
         <EditNotesModal
           setEditNotesModal={setEditNotesModal}
@@ -71,7 +92,7 @@ function AppointmentCard(props) {
       <div className={classes.profile}>
         <p>
           {isPatient && <span>Dr. {doctor_name}</span>}
-          {!isPatient && <span>{patient_name}</span>}
+          {!isPatient && <span onClick={getPatientDetails}>{patient_name}</span>}
 
           <span>{parseDate(appointmentTime)}</span>
         </p>

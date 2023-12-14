@@ -1,0 +1,41 @@
+.patientDetailsModalContainer {
+  position: fixed;
+  inset: 0 0 0 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 100;
+  overflow: auto;
+}
+
+.patientDetailsModal {
+  position: relative;
+  width: 50%;
+  background-color: white;
+  overflow: scroll;
+}
+
+.patientDetailsModal button {
+  position: absolute;
+  right: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+
+.patientDetailsModal p {
+  margin: 2rem;
+}
+
+.patientDetailsModal span {
+  color: #1ED760;
+  font-weight: 600;
+  padding: 0.5rem;
+}

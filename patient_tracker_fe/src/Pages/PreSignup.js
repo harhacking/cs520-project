@@ -5,6 +5,7 @@ import plant from "../assets/presignup/plant.png"
 import doctor from "../assets/presignup/doctor.png"
 import man from "../assets/presignup/man.png"
 
+//This Page offers two options - signup as a patient or a doctor
 function PreSignup() {
   return (
     <div className={classes.preSignupContainer}>

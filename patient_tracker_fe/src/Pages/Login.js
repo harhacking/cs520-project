@@ -9,21 +9,28 @@ import videoCallPng from "../assets/login/videocall.png";
 
 function Login() {
   const navigate = useNavigate();
+
+  // React Hook Form for form management
   const form = useForm({ mode: "all" });
   const { register, control, handleSubmit, formState, clearErrors, watch } =
     form;
   const { errors, isDirty, isValid } = formState;
 
+  // Watch for changes in the username and password fields
   const username = watch("username", "");
   const password = watch("password", "");
+
+  // State for displaying credential errors
   const [credError, setCredError] = useState("");
 
+  // Handler function for the login form submission
   const loginHandler = (e) => {
     const data = {
       username: username,
       password: password,
     };
 
+    // Sending a POST request to the authentication endpoint
     axios
       .post("http://127.0.0.1:8000/auth/", JSON.stringify(data), {
         headers: { "Content-Type": "application/json" },
@@ -61,6 +68,7 @@ function Login() {
       });
   };
 
+  // Render the login form
   return (
     <div className={classes.loginContainer}>
       <h1 className={classes.underlineMagical}>Patient Tracker</h1>
